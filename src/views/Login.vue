@@ -73,11 +73,11 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useStore } from 'vuex'
+import { ref } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
-	setup () {
+	setup() {
 		const login_form = ref({});
 		const register_form = ref({});
 		const resetEmail = ref('');
@@ -86,38 +86,38 @@ export default {
 
 		const login = () => {
 			store.dispatch('login', login_form.value);
-		}
+		};
 
 		const register = () => {
 			if (register_form.value.password !== register_form.value.confirmPassword) {
-				alert("Passwords do not match!");
+				alert('Passwords do not match!');
 				return;
 			}
 			store.dispatch('register', register_form.value);
-		}
+		};
 
 		const onFocus = (event) => {
 			event.target.style.borderColor = '#6C63FF';
 			event.target.style.backgroundColor = '#F3F4F6';
-		}
+		};
 
 		const onBlur = (event) => {
 			event.target.style.borderColor = '';
 			event.target.style.backgroundColor = '';
-		}
+		};
 
 		const signUpWithGoogle = () => {
 			store.dispatch('signInWithGoogle');
-		}
+		};
 
 		const showResetPassword = () => {
 			resetPasswordVisible.value = true;
-		}
+		};
 
 		const resetPassword = () => {
 			store.dispatch('resetPassword', resetEmail.value);
 			resetPasswordVisible.value = false;
-		}
+		};
 
 		return {
 			login_form,
@@ -130,10 +130,10 @@ export default {
 			onBlur,
 			signUpWithGoogle,
 			showResetPassword,
-			resetPassword
-		}
-	}
-}
+			resetPassword,
+		};
+	},
+};
 </script>
 
 <style>
