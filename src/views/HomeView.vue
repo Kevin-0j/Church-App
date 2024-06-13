@@ -1,5 +1,6 @@
 <template>
   <v-app id="home">
+    <NavBar /> <!-- Only one NavBar component included here -->
     <v-container fluid>
       <div class="head">
         <v-row>
@@ -142,24 +143,156 @@
       </v-col>
       <v-col cols="12" class="imgHover">
         <v-row class="fill-height" align="center" justify="center">
-          <template v-for="(item, index) in images" :key="index">
-            <v-col cols="4" class="my-4 mx-0">
-              <v-hover>
-                <template #default="{ props }">
-                  <v-img
-                    v-bind="props"
-                    :src="item"
-                    class="d-block align-end"
-                    height="150"
-                    width="300"
-                  ></v-img>
-                </template>
+          <template v-for="(item, i) in items" :key="i">
+            <v-col cols="12" md="4">
+              <v-hover v-slot="{ isHovering, props }">
+                <v-card
+                  :elevation="isHovering ? 12 : 2"
+                  :class="{ 'on-hover': isHovering }"
+                  v-bind="props"
+                >
+                  <v-img :src="item.img" height="225px" cover></v-img>
+                </v-card>
               </v-hover>
             </v-col>
           </template>
         </v-row>
       </v-col>
-      <v-divider></v-divider>
+      <v-col cols="12" sm="12">
+        <div class="d-flex justify-center mb-6">
+          <v-btn color="#FBDF7E" class="mt-4">Load More</v-btn>
+        </div>
+      </v-col>
+      <v-col cols="12" id="page">
+        <div class="pre">
+          <v-row>
+            <v-col cols="12" sm="4">
+              <v-card class="mx-auto" max-width="344" height="">
+                <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
+                <v-card-title> We provide you the best </v-card-title>
+                <v-card-subtitle>
+                  By Church Team | 06 Sep 2022
+                </v-card-subtitle>
+                <v-card-text>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
+                  rem saepe sapiente deleniti, odio non laborum fuga.
+                </v-card-text>
+              </v-card>
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-card class="mx-auto" max-width="344" height="">
+                <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
+                <v-card-title> We provide you the best </v-card-title>
+                <v-card-subtitle>
+                  By Church Team | 06 Sep 2022
+                </v-card-subtitle>
+                <v-card-text>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
+                  rem saepe sapiente deleniti, odio non laborum fuga.
+                </v-card-text>
+              </v-card>
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-card class="mx-auto" max-width="344" height="">
+                <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
+                <v-card-title> We provide you the best </v-card-title>
+                <v-card-subtitle>
+                  By Church Team | 06 Sep 2022
+                </v-card-subtitle>
+                <v-card-text>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
+                  rem saepe sapiente deleniti, odio non laborum fuga.
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </div>
+      </v-col>
+      <v-col cols="12" id="biog">
+        <div class="hire">
+          <v-row>
+            <v-col cols="12" sm="8">
+              <h1 class="mt-9">Join Our Community</h1>
+              <p class="text-grey">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod
+                itaque, eaque molestiae deleniti, earum voluptate eos id dicta
+                at, blanditiis
+              </p>
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-btn color="#FBDF7E" class="mt-15">Join Us</v-btn>
+            </v-col>
+          </v-row>
+        </div>
+      </v-col>
+      <v-col cols="12" sm="12" class="px-16" id="contact">
+        <v-row>
+          <v-col cols="12" sm="4">
+            <div class="child">
+              <h1>Contact info.</h1>
+              <v-btn
+                icon="fas fa-map-marker-alt"
+                color=""
+                class="mt-10"
+                variant="outlined"
+              ></v-btn>
+              <br />
+              <span class="text-caption">Your Street SYO, yourArea Dream</span>
+              <br />
+              <v-btn
+                icon="fas fa-phone-alt"
+                color=""
+                class="mt-10"
+                variant="outlined"
+              ></v-btn>
+              <br />
+              <span class="text-caption">00235 - 6521</span>
+              <br />
+              <v-btn
+                icon="fas fa-envelope"
+                color=""
+                class="mt-10"
+                variant="outlined"
+              ></v-btn>
+              <br />
+              <span class="text-caption">aaeideapro@gmail.com</span>
+              <br />
+            </div>
+          </v-col>
+          <v-col cols="12" sm="8">
+            <h1 class="mt-8">Send your message</h1>
+            <v-divider></v-divider>
+            <span class="text-caption">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
+              fugiat officia, odio eaque exercitationem libero nesciunt placeat,
+              repellat obcaecati sed tenetur! Est labore aliquam amet
+              consequatur necessitatibus fugit obcaecati facilis!
+            </span>
+            <v-row class="mt-10">
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  label="Name"
+                  persistent-hint
+                  variant="outlined"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  label="Email"
+                  persistent-hint
+                  variant="outlined"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-text-field
+              label="Message"
+              persistent-hint
+              variant="outlined"
+            ></v-text-field>
+            <v-btn color="#FBDF7E" class="mt-4">Send</v-btn>
+          </v-col>
+        </v-row>
+      </v-col>
     </v-container>
   </v-app>
 </template>
@@ -170,49 +303,75 @@ export default {
     return {
       slider2: 0,
       items: [
-        { img: "" },
-        { img: "" },
-        { img: "" },
-        { img: "" },
-        { img: "" },
-        { img: "" },
-      ],
-    };
-  },
+        { img: 'img1.jpg' },
+        { img: 'img2.jpg' },
+        { img: 'img3.jpg' }
+      ]
     }
-  
-    
+  }
+}
 </script>
 
 <style scoped>
-.egg img {
-  width: 100%;
+.head {
+  background-color: #333;
+  color: #fff;
+}
+.text-grey {
+  color: grey;
+}
+.text-white {
+  color: white;
+}
+.text-yellow {
+  color: yellow;
+}
+.text-caption {
+  font-size: 12px;
+}
+.mt-4 {
+  margin-top: 16px;
+}
+.mt-8 {
+  margin-top: 32px;
+}
+.mt-9 {
+  margin-top: 36px;
+}
+.mt-10 {
+  margin-top: 40px;
+}
+.mt-16 {
+  margin-top: 64px;
+}
+.mt-n4 {
+  margin-top: -16px;
+}
+.padd {
+  padding: 16px;
+}
+.px-16 {
+  padding-left: 64px;
+  padding-right: 64px;
+}
+.hire {
+  background-color: #f7f7f7;
+  padding: 64px;
 }
 .child {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-.first .child {
-  background-color: #2c3e50;
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
+  text-align: center;
 }
 .fill-height {
-  flex-wrap: wrap;
+  height: 100%;
 }
-.imgHover:hover img {
-  transform: scale(1.1);
-  transition: 0.3s;
+.on-hover {
+  background-color: #f7f7f7;
 }
-
-
-
+</style>
+<style scoped>
 .v-container {
   padding: 16px 0 16px 0;
 }
-
 .head {
   position: relative;
   text-align: center;

@@ -8,8 +8,8 @@
 					type="email" 
 					placeholder="Email address"
 					v-model="register_form.email"
-					@focus="onFocus"
-					@blur="onBlur" />
+					
+					 />
 				<input 
 					type="password" 
 					placeholder="Password" 

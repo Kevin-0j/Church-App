@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-      <v-app-bar app color="black" dark flat class="px-12" v-if="$store.state.user">
+      <v-app-bar app color="black" dark flat class="px-12" v-if="isAuthenticated">
         <v-btn>
           <v-icon color="yellow" left class="mr-2">fas fa-church</v-icon> Church
         </v-btn>
@@ -12,10 +12,10 @@
         <v-btn text @click="scroll('makeAnOffering')">Make an Offering</v-btn>
         <v-btn text @click="scroll('seeUpcomingEvents')">See Upcoming Events</v-btn>
         <v-btn text @click="scroll('testimonials')">Testimonials</v-btn>
-        <v-btn text @click="$store.dispatch('logout')">Log Out</v-btn>
+        <v-btn text @click="logout">Log Out</v-btn>
       </v-app-bar>
 
-      <div id="nav-links" v-if="$store.state.user">
+      <div id="nav-links" v-if="isAuthenticated">
         <router-link to="/">Home</router-link> |
         <router-link to="/about">About</router-link>
       </div>
@@ -26,26 +26,58 @@
 </template>
 
 <script>
-import { onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
+import { ref, onBeforeMount } from 'vue'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from './firebase'
+import router from './router'
 
 export default {
   setup() {
-    const store = useStore()
+    const isAuthenticated = ref(false)
+    const isAdmin = ref(false)
+    const auth = getAuth()
+
+    const checkUserRole = async (user) => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'users', user.uid))
+        if (userDoc.exists()) {
+          const userData = userDoc.data()
+          isAdmin.value = userData.role === 'admin'
+          if (isAdmin.value) {
+            router.push('/admin')  // Redirect to admin page if user is admin
+          }
+        } else {
+          isAdmin.value = false
+        }
+        isAuthenticated.value = true
+      } else {
+        isAuthenticated.value = false
+        isAdmin.value = false
+      }
+    }
 
     onBeforeMount(() => {
-      store.dispatch('fetchUser')
+      onAuthStateChanged(auth, (user) => {
+        checkUserRole(user)
+      })
     })
 
-    return { store }
+    const logout = () => {
+      auth.signOut().then(() => {
+        router.push('/login')  // Redirect to login page after logout
+      })
+    }
+
+    return { isAuthenticated, isAdmin, logout }
   },
   methods: {
     scroll(refName) {
-      const element = document.getElementById(refName);
+      const element = document.getElementById(refName)
       if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+        element.scrollIntoView({ behavior: 'smooth' })
       }
-    },
+    }
   }
 }
 </script>
