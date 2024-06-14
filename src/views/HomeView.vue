@@ -171,7 +171,7 @@
                 <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
                 <v-card-title> We provide you the best </v-card-title>
                 <v-card-subtitle>
-                  By Church Team | 06 Sep 2022
+                  By Church Team | 06 Jun 2024
                 </v-card-subtitle>
                 <v-card-text>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
@@ -184,7 +184,7 @@
                 <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
                 <v-card-title> We provide you the best </v-card-title>
                 <v-card-subtitle>
-                  By Church Team | 06 Sep 2022
+                  By Church Team | 06 Jun 2024
                 </v-card-subtitle>
                 <v-card-text>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
@@ -197,7 +197,7 @@
                 <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
                 <v-card-title> We provide you the best </v-card-title>
                 <v-card-subtitle>
-                  By Church Team | 06 Sep 2022
+                  By Church Team | 06 Jun 2024
                 </v-card-subtitle>
                 <v-card-text>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
@@ -237,7 +237,7 @@
                 variant="outlined"
               ></v-btn>
               <br />
-              <span class="text-caption">Your Street SYO, yourArea Dream</span>
+              <span class="text-caption">Your Street Address, yourArea </span>
               <br />
               <v-btn
                 icon="fas fa-phone-alt"
@@ -255,7 +255,7 @@
                 variant="outlined"
               ></v-btn>
               <br />
-              <span class="text-caption">aaeideapro@gmail.com</span>
+              <span class="text-caption">kevin.ojwang@strathmore.edu</span>
               <br />
             </div>
           </v-col>
