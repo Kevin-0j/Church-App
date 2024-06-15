@@ -1,6 +1,6 @@
 <template>
   <v-app id="home">
-    <NavBar /> <!-- Only one NavBar component included here -->
+    <NavBar />
     <v-container fluid>
       <div class="head">
         <v-row>
@@ -158,13 +158,9 @@
           </template>
         </v-row>
       </v-col>
-      <v-col cols="12" sm="12">
-        <div class="d-flex justify-center mb-6">
-          <v-btn color="#FBDF7E" class="mt-4">Load More</v-btn>
-        </div>
-      </v-col>
-      <v-col cols="12" id="page">
+      <v-col cols="12" id="testimonials" class="mt-16"> <!-- Added margin-top -->
         <div class="pre">
+          <h2>Testimonials</h2>
           <v-row>
             <v-col cols="12" sm="4">
               <v-card class="mx-auto" max-width="344" height="">
@@ -208,24 +204,7 @@
           </v-row>
         </div>
       </v-col>
-      <v-col cols="12" id="biog">
-        <div class="hire">
-          <v-row>
-            <v-col cols="12" sm="8">
-              <h1 class="mt-9">Join Our Community</h1>
-              <p class="text-grey">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod
-                itaque, eaque molestiae deleniti, earum voluptate eos id dicta
-                at, blanditiis
-              </p>
-            </v-col>
-            <v-col cols="12" sm="4">
-              <v-btn color="#FBDF7E" class="mt-15">Join Us</v-btn>
-            </v-col>
-          </v-row>
-        </div>
-      </v-col>
-      <v-col cols="12" sm="12" class="px-16" id="contact">
+      <v-col cols="12" sm="12" class="px-16 mt-16" id="contact"> <!-- Added margin-top -->
         <v-row>
           <v-col cols="12" sm="4">
             <div class="child">
@@ -271,6 +250,7 @@
             <v-row class="mt-10">
               <v-col cols="12" sm="6">
                 <v-text-field
+                  v-model="message.name"
                   label="Name"
                   persistent-hint
                   variant="outlined"
@@ -278,6 +258,7 @@
               </v-col>
               <v-col cols="12" sm="6">
                 <v-text-field
+                  v-model="message.email"
                   label="Email"
                   persistent-hint
                   variant="outlined"
@@ -285,19 +266,50 @@
               </v-col>
             </v-row>
             <v-text-field
+              v-model="message.content"
               label="Message"
               persistent-hint
               variant="outlined"
             ></v-text-field>
-            <v-btn color="#FBDF7E" class="mt-4">Send</v-btn>
+            <v-btn color="#FBDF7E" class="mt-4" @click="sendMessage">Send</v-btn>
           </v-col>
         </v-row>
       </v-col>
+
+      <!-- New Sections -->
+      <section id="liveMassTimes" class="section">
+        <h2>Live Mass Times</h2>
+        <v-row>
+          <v-col cols="3"><strong>Time of the Day</strong></v-col>
+          <v-col cols="3"><strong>Date</strong></v-col>
+          <v-col cols="3"><strong>Theme of the Day</strong></v-col>
+          <v-col cols="3"><strong>Celebrant</strong></v-col>
+        </v-row>
+        <v-data-table :headers="massHeaders" :items="massTimes"></v-data-table>
+      </section>
+      
+      <section id="makeAnOffering" class="section">
+        <router-link to="/make-an-offering">Make an Offering</router-link>
+      </section>
+      
+      <section id="seeUpcomingEvents" class="section">
+        <h2>Upcoming Events</h2>
+        <v-row>
+          <v-col cols="4"><strong>Event Name</strong></v-col>
+          <v-col cols="4"><strong>Date</strong></v-col>
+          <v-col cols="4"><strong>Plea/Request</strong></v-col>
+        </v-row>
+        <v-data-table :headers="eventHeaders" :items="events"></v-data-table>
+      </section>
     </v-container>
   </v-app>
 </template>
 
 <script>
+import { ref, onMounted } from 'vue'
+import { collection, addDoc, getDocs } from 'firebase/firestore'
+import { db } from '../firebase'
+
 export default {
   data() {
     return {
@@ -306,8 +318,67 @@ export default {
         { img: 'img1.jpg' },
         { img: 'img2.jpg' },
         { img: 'img3.jpg' }
+      ],
+      focus: new Date(),
+      events: [],
+      message: { name: '', email: '', content: '' },
+      massHeaders: [
+        { text: 'Time of Day', value: 'timeOfDay' },
+        { text: 'Day-Date', value: 'dayDate' },
+        { text: 'Theme', value: 'theme' },
+        { text: 'Celebrant', value: 'celebrant' }
+      ],
+      massTimes: [],
+      eventHeaders: [
+        { text: 'Event Name', value: 'name' },
+        { text: 'Date', value: 'date' },
+        { text: 'Plea/Request', value: 'plea' }
       ]
     }
+  },
+  setup() {
+    const focus = ref(new Date())
+    const events = ref([])
+    const message = ref({ name: '', email: '', content: '' })
+    const massHeaders = [
+      { text: 'Time of Day', value: 'timeOfDay' },
+      { text: 'Day-Date', value: 'dayDate' },
+      { text: 'Theme', value: 'theme' },
+      { text: 'Celebrant', value: 'celebrant' }
+    ]
+    const massTimes = ref([])
+    const eventHeaders = [
+      { text: 'Event Name', value: 'name' },
+      { text: 'Date', value: 'date' },
+      { text: 'Plea/Request', value: 'plea' }
+    ]
+
+    const fetchEvents = async () => {
+      const querySnapshot = await getDocs(collection(db, 'events'))
+      events.value = querySnapshot.docs.map(doc => doc.data())
+    }
+
+    const fetchMassTimes = async () => {
+      const querySnapshot = await getDocs(collection(db, 'liveMassTimes'))
+      massTimes.value = querySnapshot.docs.map(doc => doc.data())
+    }
+
+    const sendMessage = async () => {
+      try {
+        await addDoc(collection(db, 'messages'), message.value)
+        alert('Message sent successfully!')
+        message.value = { name: '', email: '', content: '' }
+      } catch (error) {
+        alert('Error sending message: ' + error.message)
+      }
+    }
+
+    onMounted(() => {
+      fetchEvents()
+      fetchMassTimes()
+    })
+
+    return { focus, events, message, massHeaders, massTimes, eventHeaders, sendMessage }
   }
 }
 </script>
@@ -367,8 +438,6 @@ export default {
 .on-hover {
   background-color: #f7f7f7;
 }
-</style>
-<style scoped>
 .v-container {
   padding: 16px 0 16px 0;
 }
@@ -439,5 +508,21 @@ export default {
   padding: 0 200px;
   background-color: #e9e9e9;
   margin-top: -24px;
+}
+.section {
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.section h2 {
+  margin-bottom: 20px;
+}
+
+#testimonials v-card {
+  margin-bottom: 20px;
+}
+
+#seeUpcomingEvents v-data-table {
+  margin-top: 20px;
 }
 </style>
