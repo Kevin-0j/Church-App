@@ -9,7 +9,7 @@
         <v-spacer></v-spacer>
         <v-btn text @click="scroll('liveMassTimes')" class="text-yellow">Live Mass Times</v-btn>
         <v-btn text @click="scroll('contact')">Admin Help</v-btn>
-        <v-btn text @click="navigate('make-an-offering')">Make an Offering</v-btn>
+        <v-btn text @click="navigate('MakeAnOffering')">Make an Offering</v-btn>
         <v-btn text @click="scroll('seeUpcomingEvents')">See Upcoming Events</v-btn>
         <v-btn text @click="scroll('testimonials')">Testimonials</v-btn>
         <v-btn text @click="logout">Log Out</v-btn>
