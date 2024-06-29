@@ -29,10 +29,12 @@ export default createStore({
         }
         const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
         const userData = userDoc.data();
-        if (!userData.admin) {
-          router.push('/'); // Change to the root path
+        if (userData.role === 'church member') {
+          router.push('/member');
+        } else if (userData.role === 'priest') {
+          router.push('/priest');
         } else {
-          router.push('/admin'); // Redirect to admin dashboard
+          router.push('/');
         }
         commit('SET_USER', userCredential.user);
       } catch (error) {
@@ -49,11 +51,11 @@ export default createStore({
       }
     },
     async register({ commit }, details) {
-      const { email, password } = details;
+      const { email, password, role } = details;
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await sendEmailVerification(auth.currentUser);
-        await setDoc(doc(db, 'users', userCredential.user.uid), { email: userCredential.user.email, admin: false });
+        await setDoc(doc(db, 'users', userCredential.user.uid), { email: userCredential.user.email, role: role, admin: role === 'priest' });
         alert('Registration successful. Please check your email for verification.');
         await signOut(auth);
         router.push('/login');
@@ -92,10 +94,12 @@ export default createStore({
         } else {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           const userData = userDoc.data();
-          if (!userData.admin) {
-            router.push('/'); // Change to the root path
+          if (userData.role === 'church member') {
+            router.push('/member');
+          } else if (userData.role === 'priest') {
+            router.push('/priest');
           } else {
-            router.push('/admin'); // Redirect to admin dashboard
+            router.push('/');
           }
           commit('SET_USER', user);
         }
@@ -111,10 +115,12 @@ export default createStore({
         }
         const userDoc = await getDoc(doc(db, 'users', result.user.uid));
         const userData = userDoc.data();
-        if (!userData.admin) {
-          router.push('/'); // Change to the root path
+        if (userData.role === 'church member') {
+          router.push('/member');
+        } else if (userData.role === 'priest') {
+          router.push('/priest');
         } else {
-          router.push('/admin'); // Redirect to admin dashboard
+          router.push('/');
         }
         commit('SET_USER', result.user);
       } catch (error) {

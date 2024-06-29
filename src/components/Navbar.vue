@@ -6,6 +6,7 @@
   
       <v-spacer></v-spacer>
       <v-btn text @click="scroll('liveMassTimes')" class="text-yellow">Live Mass Times</v-btn>
+      <v-btn text :to="{ name: 'Member' }">Member Dashboard</v-btn>
       <v-btn text @click="scroll('adminHelp')">Admin Help</v-btn>
       <v-btn text @click="scroll('makeAnOffering')">Make an Offering</v-btn>
       <v-btn text @click="scroll('seeUpcomingEvents')">See Upcoming Events</v-btn>
@@ -16,6 +17,7 @@
   
   <script>
   export default {
+    name: 'NavBar',
     methods: {
       scroll(refName) {
         const element = document.getElementById(refName);

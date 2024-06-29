@@ -1,31 +1,7 @@
 <template>
 	<main class="login">
 	  <section class="forms">
-		<form class="register" @submit.prevent="register">
-		  <h2>Register</h2>
-		  <input 
-			type="email" 
-			placeholder="Email address"
-			v-model="register_form.email"
-		  />
-		  <input 
-			type="password" 
-			placeholder="Password" 
-			v-model="register_form.password"
-			@focus="onFocus"
-			@blur="onBlur" />
-		  <input 
-			type="password" 
-			placeholder="Re-enter Password"
-			v-model="register_form.confirmPassword"
-			@focus="onFocus"
-			@blur="onBlur" />
-		  <input 
-			type="submit" 
-			value="Register" />
-		</form>
-  
-		<form class="login" @submit.prevent="login">
+		<form @submit.prevent="login">
 		  <h2>Login</h2>
 		  <input 
 			type="email" 
@@ -42,6 +18,7 @@
 		  <input 
 			type="submit" 
 			value="Login" />
+		  <p>Don't have an account? <a href="#" @click.prevent="navigateToRegister">Register</a></p>
 		  <div class="forgot-password">
 			<a href="#" @click.prevent="showResetPassword">Forgot Password?</a>
 		  </div>
@@ -70,27 +47,18 @@
   </template>
   
   <script>
-  import { ref } from 'vue';
-  import { useStore } from 'vuex';
+  import { ref } from 'vue'
+  import store from '../store'
+  import router from '../router'  // Import the router
   
   export default {
 	setup() {
 	  const login_form = ref({});
-	  const register_form = ref({});
 	  const resetEmail = ref('');
 	  const resetPasswordVisible = ref(false);
-	  const store = useStore();
   
 	  const login = () => {
 		store.dispatch('login', login_form.value);
-	  };
-  
-	  const register = () => {
-		if (register_form.value.password !== register_form.value.confirmPassword) {
-		  alert('Passwords do not match!');
-		  return;
-		}
-		store.dispatch('register', register_form.value);
 	  };
   
 	  const onFocus = (event) => {
@@ -99,12 +67,8 @@
 	  };
   
 	  const onBlur = (event) => {
-		event.target.style.borderColor = '';
-		event.target.style.backgroundColor = '';
-	  };
-  
-	  const signUpWithGoogle = () => {
-		store.dispatch('signInWithGoogle');
+		event.target.style.borderColor = '#D1D5DB';
+		event.target.style.backgroundColor = '#FFFFFF';
 	  };
   
 	  const showResetPassword = () => {
@@ -113,24 +77,30 @@
   
 	  const resetPassword = () => {
 		store.dispatch('resetPassword', resetEmail.value);
-		resetPasswordVisible.value = false;
+	  };
+  
+	  const signUpWithGoogle = () => {
+		store.dispatch('signInWithGoogle');
+	  };
+  
+	  const navigateToRegister = () => {
+		router.push('/register');  // Use router.push to navigate
 	  };
   
 	  return {
 		login_form,
-		register_form,
 		resetEmail,
 		resetPasswordVisible,
 		login,
-		register,
 		onFocus,
 		onBlur,
-		signUpWithGoogle,
 		showResetPassword,
 		resetPassword,
+		signUpWithGoogle,
+		navigateToRegister
 	  };
-	},
-  };
+	}
+  }
   </script>
   
   <style scoped>

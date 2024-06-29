@@ -8,6 +8,8 @@ import TestimonialsView from '../views/TestimonialsView.vue'
 import SeeUpcomingEventsView from '../views/SeeUpcomingEventsView.vue'
 import AdminView from '../views/Admin.vue'
 import LoginView from '../views/Login.vue'
+import MemberView from '../views/MemberView.vue';
+import RegisterView from '@/views/RegisterView.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: HomeView },
@@ -18,6 +20,18 @@ const routes = [
   { path: '/testimonials', name: 'Testimonials', component: TestimonialsView },
   { path: '/see-upcoming-events', name: 'SeeUpcomingEvents', component: SeeUpcomingEventsView },
   { path: '/admin', name: 'Admin', component: AdminView },
+  { path: '/member', name: 'Member', component: MemberView },
+ { path: '/register', name: 'register', component: RegisterView },
+{ path: '/book-events', name: 'BookEvents', component: BookEventsView },
+{ path: '/church-activity', name: 'ChurchActivity', component: ChurchActivityView },
+{ path: '/pay-tithes', name: 'PayTithes', component: PayTithesView },
+{ path: '/priest-consultation', name: 'PriestConsultation', component: PriestConsultationView },
+ {
+  path: '/',
+  name: 'Home',
+  component: () => import('../views/HomeView.vue'),  // Default route
+},
+   
   { path: '/login', name: 'Login', component: LoginView }
 ]
 
