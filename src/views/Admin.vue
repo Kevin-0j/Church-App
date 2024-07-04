@@ -170,6 +170,7 @@ export default {
         console.error('Error adding mass time: ', error)
       }
     }
+    
 
     const addEvent = async () => {
       try {

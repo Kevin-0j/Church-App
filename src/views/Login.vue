@@ -1,31 +1,7 @@
 <template>
 	<main class="login">
 	  <section class="forms">
-		<form class="register" @submit.prevent="register">
-		  <h2>Register</h2>
-		  <input 
-			type="email" 
-			placeholder="Email address"
-			v-model="register_form.email"
-		  />
-		  <input 
-			type="password" 
-			placeholder="Password" 
-			v-model="register_form.password"
-			@focus="onFocus"
-			@blur="onBlur" />
-		  <input 
-			type="password" 
-			placeholder="Re-enter Password"
-			v-model="register_form.confirmPassword"
-			@focus="onFocus"
-			@blur="onBlur" />
-		  <input 
-			type="submit" 
-			value="Register" />
-		</form>
-  
-		<form class="login" @submit.prevent="login">
+		<form @submit.prevent="login">
 		  <h2>Login</h2>
 		  <input 
 			type="email" 
@@ -42,6 +18,7 @@
 		  <input 
 			type="submit" 
 			value="Login" />
+		  <p>Don't have an account? <a href="#" @click.prevent="navigateToRegister">Register</a></p>
 		  <div class="forgot-password">
 			<a href="#" @click.prevent="showResetPassword">Forgot Password?</a>
 		  </div>
@@ -71,27 +48,14 @@
   
   <script>
   import { ref } from 'vue';
-  import { useStore } from 'vuex';
+  import store from '../store';
+  import router from '../router';
   
   export default {
 	setup() {
 	  const login_form = ref({});
-	  const register_form = ref({});
 	  const resetEmail = ref('');
 	  const resetPasswordVisible = ref(false);
-	  const store = useStore();
-  
-	  const login = () => {
-		store.dispatch('login', login_form.value);
-	  };
-  
-	  const register = () => {
-		if (register_form.value.password !== register_form.value.confirmPassword) {
-		  alert('Passwords do not match!');
-		  return;
-		}
-		store.dispatch('register', register_form.value);
-	  };
   
 	  const onFocus = (event) => {
 		event.target.style.borderColor = '#6C63FF';
@@ -99,12 +63,34 @@
 	  };
   
 	  const onBlur = (event) => {
-		event.target.style.borderColor = '';
-		event.target.style.backgroundColor = '';
+		event.target.style.borderColor = '#D1D5DB';
+		event.target.style.backgroundColor = '#FFFFFF';
 	  };
   
-	  const signUpWithGoogle = () => {
-		store.dispatch('signInWithGoogle');
+	  const login = () => {
+		store.dispatch('login', login_form.value)
+		  .then(() => {
+			const userRole = store.getters.userRole; // Assuming you have a getter for user role in Vuex store
+			switch (userRole) {
+			  case 'youth member':
+				router.push('/youth');
+				break;
+			  case 'church member':
+				router.push('/member');
+				break;
+			  case 'admin':
+				router.push('/admin');
+				break;	
+			  case 'priest':
+				router.push('/priest');
+				break;
+			  default:
+				router.push('/home'); // Default redirect if role not specified
+			}
+		  })
+		  .catch((error) => {
+			alert(error.message);  // Handle login error
+		  });
 	  };
   
 	  const showResetPassword = () => {
@@ -112,26 +98,45 @@
 	  };
   
 	  const resetPassword = () => {
-		store.dispatch('resetPassword', resetEmail.value);
-		resetPasswordVisible.value = false;
+		store.dispatch('resetPassword', resetEmail.value)
+		  .then(() => {
+			alert('Password reset email sent!');
+		  })
+		  .catch((error) => {
+			alert(error.message);  // Handle reset password error
+		  });
+	  };
+  
+	  const signUpWithGoogle = () => {
+		store.dispatch('signInWithGoogle')
+		  .then(() => {
+			router.push('/home');  // Redirect to home after Google sign-in
+		  })
+		  .catch((error) => {
+			alert(error.message);  // Handle Google sign-in error
+		  });
+	  };
+  
+	  const navigateToRegister = () => {
+		router.push('/register');
 	  };
   
 	  return {
 		login_form,
-		register_form,
 		resetEmail,
 		resetPasswordVisible,
 		login,
-		register,
 		onFocus,
 		onBlur,
-		signUpWithGoogle,
 		showResetPassword,
 		resetPassword,
+		signUpWithGoogle,
+		navigateToRegister
 	  };
-	},
+	}
   };
   </script>
+  
   
   <style scoped>
   .forms {
@@ -309,4 +314,5 @@
 	cursor: pointer;
   }
   </style>
+  
   

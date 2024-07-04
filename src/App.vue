@@ -1,21 +1,23 @@
 <template>
   <div id="app">
     <v-app>
-      <v-app-bar app color="black" dark flat class="px-12" v-if="isAuthenticated">
+      <v-app-bar app color="black" dark flat class="px-12">
         <v-btn>
           <v-icon color="yellow" left class="mr-2">fas fa-church</v-icon> Church
         </v-btn>
 
         <v-spacer></v-spacer>
         <v-btn text @click="scroll('liveMassTimes')" class="text-yellow">Live Mass Times</v-btn>
+
         <v-btn text @click="scroll('contact')">Admin Help</v-btn>
         <v-btn text @click="navigate('MakeAnOffering')">Make an Offering</v-btn>
         <v-btn text @click="scroll('seeUpcomingEvents')">See Upcoming Events</v-btn>
         <v-btn text @click="scroll('testimonials')">Testimonials</v-btn>
-        <v-btn text @click="logout">Log Out</v-btn>
+        <v-btn text v-if="isAuthenticated" @click="logout">Log Out</v-btn>
+        <v-btn text v-else @click="navigateToLogin">Login</v-btn>
       </v-app-bar>
 
-      <div id="nav-links" v-if="isAuthenticated">
+      <div id="nav-links">
         <router-link to="/">Home</router-link> |
         <router-link to="/about">About</router-link>
       </div>
@@ -45,7 +47,13 @@ export default {
           const userData = userDoc.data()
           isAdmin.value = userData.role === 'admin'
           if (isAdmin.value) {
-            router.push('/admin')  // Redirect to admin page if user is admin
+            router.push('/admin');  // Redirect to admin page if user is admin
+          } else if (userData.role === 'church member') {
+            router.push('/member');  // Redirect to member page if user is church member
+          } else if (userData.role === 'priest') {
+            router.push('/priest');  // Redirect to priest page if user is priest
+          } else if (userData.role === 'youth member') {
+              router.push('/youth');  // Redirect to priest page if user is priest
           }
         } else {
           isAdmin.value = false
@@ -55,35 +63,40 @@ export default {
         isAuthenticated.value = false
         isAdmin.value = false
       }
-    }
+    };
 
     onBeforeMount(() => {
       onAuthStateChanged(auth, (user) => {
-        checkUserRole(user)
-      })
-    })
+        checkUserRole(user);
+      });
+    });
 
     const logout = () => {
       auth.signOut().then(() => {
-        router.push('/login')  // Redirect to login page after logout
-      })
-    }
+        router.push('/login');  // Redirect to login page after logout
+        isAuthenticated.value = false; // Ensure this is set to false on logout
+      });
+    };
 
     const navigate = (routeName) => {
-      router.push({ name: routeName })
-    }
+      router.push({ name: routeName });
+    };
 
-    return { isAuthenticated, isAdmin, logout, navigate }
+    const navigateToLogin = () => {
+      router.push('/login'); // Ensure the route name matches the route defined in your router
+    };
+
+    return { isAuthenticated, isAdmin, logout, navigate, navigateToLogin };
   },
   methods: {
     scroll(refName) {
-      const element = document.getElementById(refName)
+      const element = document.getElementById(refName);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
+        element.scrollIntoView({ behavior: 'smooth' });
       }
     }
   }
-}
+};
 </script>
 
 <style>

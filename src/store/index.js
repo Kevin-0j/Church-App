@@ -1,13 +1,13 @@
 import { createStore } from 'vuex';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, signInWithPopup, GoogleAuthProvider, updateProfile, sendEmailVerification } from 'firebase/auth';
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import router from '../router';
-import { auth, googleProvider } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup, sendPasswordResetEmail, sendEmailVerification } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { auth, googleProvider, db } from '../firebase';
 
 export default createStore({
   state: {
     user: null,
+    userRole: null // New state to store user role
   },
   mutations: {
     SET_USER(state, user) {
@@ -15,65 +15,36 @@ export default createStore({
     },
     CLEAR_USER(state) {
       state.user = null;
+      state.userRole = null; // Clear user role on logout
     },
+    SET_USER_ROLE(state, role) {
+      state.userRole = role;
+    }
   },
   actions: {
-    async login({ commit }, details) {
-      const { email, password } = details;
+    async login({ commit }, { email, password }) {
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        if (!userCredential.user.emailVerified) {
-          alert('Please verify your email address before logging in.');
-          await signOut(auth);
-          return;
-        }
-        const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
-        const userData = userDoc.data();
-        if (!userData.admin) {
-          router.push('/'); // Change to the root path
-        } else {
-          router.push('/admin'); // Redirect to admin dashboard
-        }
-        commit('SET_USER', userCredential.user);
+        const { user } = await signInWithEmailAndPassword(auth, email, password);
+        commit('SET_USER', user);
+        const userRole = await fetchUserRole(user.uid); // Fetch user role after login
+        commit('SET_USER_ROLE', userRole);
       } catch (error) {
-        switch (error.code) {
-          case 'auth/user-not-found':
-            alert('User not found');
-            break;
-          case 'auth/wrong-password':
-            alert('Wrong password');
-            break;
-          default:
-            alert('Something went wrong');
-        }
+        throw error;
       }
     },
-    async register({ commit }, details) {
-      const { email, password } = details;
+    async register({ commit }, { email, password, role }) {
       try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await sendEmailVerification(auth.currentUser);
-        await setDoc(doc(db, 'users', userCredential.user.uid), { email: userCredential.user.email, admin: false });
-        alert('Registration successful. Please check your email for verification.');
-        await signOut(auth);
-        router.push('/login');
+        const { user } = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(user, { displayName: role });
+        await setDoc(doc(db, 'users', user.uid), {
+          email,
+          role
+        });
+        await sendEmailVerification(user);
+        commit('SET_USER', user);
+        commit('SET_USER_ROLE', role); // Set user role after registration
       } catch (error) {
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            alert('Email already in use');
-            break;
-          case 'auth/invalid-email':
-            alert('Invalid email');
-            break;
-          case 'auth/operation-not-allowed':
-            alert('Operation not allowed');
-            break;
-          case 'auth/weak-password':
-            alert('Weak password');
-            break;
-          default:
-            alert('Something went wrong');
-        }
+        throw error;
       }
     },
     async logout({ commit }) {
@@ -81,55 +52,34 @@ export default createStore({
       commit('CLEAR_USER');
       router.push('/login');
     },
-    fetchUser({ commit }) {
-      auth.onAuthStateChanged(async (user) => {
-        if (user === null) {
-          commit('CLEAR_USER');
-        } else if (!user.emailVerified) {
-          await signOut(auth);
-          commit('CLEAR_USER');
-          alert('Please verify your email address before logging in.');
-        } else {
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          const userData = userDoc.data();
-          if (!userData.admin) {
-            router.push('/'); // Change to the root path
-          } else {
-            router.push('/admin'); // Redirect to admin dashboard
-          }
-          commit('SET_USER', user);
-        }
-      });
-    },
-    async signInWithGoogle({ commit }) {
-      try {
-        const result = await signInWithPopup(auth, googleProvider);
-        if (!result.user.emailVerified) {
-          alert('Please verify your email address before logging in.');
-          await signOut(auth);
-          return;
-        }
-        const userDoc = await getDoc(doc(db, 'users', result.user.uid));
-        const userData = userDoc.data();
-        if (!userData.admin) {
-          router.push('/'); // Change to the root path
-        } else {
-          router.push('/admin'); // Redirect to admin dashboard
-        }
-        commit('SET_USER', result.user);
-      } catch (error) {
-        console.error('Google sign-in error:', error);
-        alert('Google sign-in failed');
-      }
-    },
-    async resetPassword({ commit }, email) {
+    async resetPassword(_, email) {
       try {
         await sendPasswordResetEmail(auth, email);
-        alert('Password reset email sent. Please check your inbox.');
       } catch (error) {
-        console.error('Reset password error:', error);
-        alert(error.message);
+        throw error;
       }
     },
+    async signInWithGoogle({ commit }) {
+      const provider = new GoogleAuthProvider();
+      try {
+        const { user } = await signInWithPopup(auth, provider);
+        commit('SET_USER', user);
+        const userRole = await fetchUserRole(user.uid); // Fetch user role after Google sign-in
+        commit('SET_USER_ROLE', userRole);
+      } catch (error) {
+        throw error;
+      }
+    }
   },
+  getters: {
+    userRole: state => state.userRole
+  }
 });
+
+async function fetchUserRole(userId) {
+  const userDoc = await getDoc(doc(db, 'users', userId));
+  if (userDoc.exists()) {
+    return userDoc.data().role;
+  }
+  return null; // Handle if user role is not found
+}
