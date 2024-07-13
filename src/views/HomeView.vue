@@ -58,17 +58,17 @@
               <h4 class="mt-n4">A Community of Faith</h4>
               <h4 class="">Serving with Love</h4>
               <p class="text-grey">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Aspernatur, ullam perspiciatis fugiat temporibus laboriosam
-                accusamus tempora repellendus sequi sed cum dolorum vero est.
-                Placeat dicta architecto reiciendis est veniam. Unde.
+                Within our community of faith, we strive to serve with unwavering love and compassion. Guided by our beliefs, 
+                we embrace each opportunity to uplift and support one another. 
+                Together, we seek to create a welcoming environment 
+                where everyone can find solace and strength in their journey of faith.
               </p>
               <br />
               <p class="text-grey">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Aspernatur, ullam perspiciatis fugiat temporibus laboriosam
-                accusamus tempora repellendus sequi sed cum dolorum vero est.
-                Placeat dicta architecto reiciendis est veniam. Unde.
+                Our dedication to service extends beyond our walls, reaching out to those in need with empathy and kindness. 
+                Through shared experiences and steadfast support, we cultivate a place where faith flourishes and hearts are nourished.
+                 Together, we embody the spirit of love and unity, 
+                 making a meaningful difference in our community and beyond.
               </p>
               <v-btn tile dark color="yellow" class="mt-4">
                 Learn More
@@ -99,8 +99,8 @@
                 ></v-btn>
                 <h3 class="ml-3 mt-4">Worship Services</h3>
                 <p class="text-grey ml-3 mt-4 text-caption">
-                  Lorem, ipsum dolor sit amet <br />consectetur adipisicing
-                  <br />consectetur adipis
+                  Join us for our uplifting worship services where we  <br /> praise and  come together to
+                  <br />seek guidance.
                 </p>
               </div>
               <div class="child">
@@ -111,8 +111,8 @@
                 ></v-btn>
                 <h3 class="ml-3 mt-4">Community Outreach</h3>
                 <p class="text-grey ml-3 mt-4 text-caption">
-                  Lorem, ipsum dolor sit amet <br />consectetur adipisicing
-                  <br />consectetur adipis
+                  Our community outreach programs strive to make a   <br />offering support and positive impact,
+                  <br />compassion to those in need.
                 </p>
               </div>
               <div class="child">
@@ -123,8 +123,8 @@
                 ></v-btn>
                 <h3 class="ml-3 mt-4">Bible Study</h3>
                 <p class="text-grey ml-3 mt-4 text-caption">
-                  Lorem, ipsum dolor sit amet <br />consectetur adipisicing
-                  <br />consectetur adipis
+                  Dive deeper into scripture with our engaging Bible    <br />where we explore and discuss study sessions,
+                  <br />the teachings of faith and wisdom.
                 </p>
               </div>
             </v-col>
@@ -167,11 +167,11 @@
                 <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
                 <v-card-title> We provide you the best </v-card-title>
                 <v-card-subtitle>
-                  By Church Team | 06 Jun 2024
+                  By Mrs Esther | 07 Jun 2024
                 </v-card-subtitle>
                 <v-card-text>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
-                  rem saepe sapiente deleniti, odio non laborum fuga.
+                  Our church has been a beacon of hope and strength for me. The sermons inspire and uplift me every week. 
+                  I feel blessed to have found such a loving community where I can grow spiritually.
                 </v-card-text>
               </v-card>
             </v-col>
@@ -180,11 +180,11 @@
                 <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
                 <v-card-title> We provide you the best </v-card-title>
                 <v-card-subtitle>
-                  By Church Team | 06 Jun 2024
+                  By Our Children | 16 July 2024
                 </v-card-subtitle>
                 <v-card-text>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
-                  rem saepe sapiente deleniti, odio non laborum fuga.
+                  We love our Sunday School classes! It's so much fun learning about Jesus and making new friends.
+                   Our teachers are the best—they make learning about God exciting!
                 </v-card-text>
               </v-card>
             </v-col>
@@ -193,11 +193,11 @@
                 <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
                 <v-card-title> We provide you the best </v-card-title>
                 <v-card-subtitle>
-                  By Church Team | 06 Jun 2024
+                  By James Family | 12 March 2024
                 </v-card-subtitle>
                 <v-card-text>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
-                  rem saepe sapiente deleniti, odio non laborum fuga.
+                  Joining this church was the best decision we ever made. We've been welcomed with open arms and have found genuine friendships here.
+                  
                 </v-card-text>
               </v-card>
             </v-col>
@@ -216,7 +216,7 @@
                 variant="outlined"
               ></v-btn>
               <br />
-              <span class="text-caption">Your Street Address, yourArea </span>
+              <span class="text-caption">Nairobi CBD, Kenyatta </span>
               <br />
               <v-btn
                 icon="fas fa-phone-alt"
@@ -225,7 +225,7 @@
                 variant="outlined"
               ></v-btn>
               <br />
-              <span class="text-caption">00235 - 6521</span>
+              <span class="text-caption">+254 717342431</span>
               <br />
               <v-btn
                 icon="fas fa-envelope"
@@ -242,10 +242,9 @@
             <h1 class="mt-8">Send your message</h1>
             <v-divider></v-divider>
             <span class="text-caption">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
-              fugiat officia, odio eaque exercitationem libero nesciunt placeat,
-              repellat obcaecati sed tenetur! Est labore aliquam amet
-              consequatur necessitatibus fugit obcaecati facilis!
+              Welcome to our church community. We strive to serve with love and faith,
+               providing a place of worship and support for all.
+                Your feedback is valuable to us!
             </span>
             <v-row class="mt-10">
               <v-col cols="12" sm="6">
