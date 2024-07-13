@@ -32,8 +32,8 @@
             </div>
           </v-col>
           <v-col cols="5">
-            <div class="image-container">
-              <v-img :src="i1" class="circular-image" contain></v-img>
+            <div style="position: relative; z-index: 9999" class="mt-16">
+              <v-img src="" contain max-height="300"></v-img> <!-- Image source left blank -->
             </div>
           </v-col>
         </v-row>
@@ -43,7 +43,7 @@
           <v-row>
             <v-col cols="12" sm="6">
               <div class="egg">
-                <v-img :src="i2" class=""></v-img>
+                <v-img src="" max-height="300" class=""></v-img> <!-- Image source left blank -->
               </div>
             </v-col>
             <v-col cols="12" sm="6">
@@ -90,7 +90,7 @@
       <v-col cols="12" class="padd" id="portfolio">
         <div class="first" id="project">
           <v-row>
-            <v-col cols="12" md="4">
+            <v-col cols="12">
               <div class="child">
                 <v-btn
                   icon="fas fa-church"
@@ -103,8 +103,6 @@
                   <br />consectetur adipis
                 </p>
               </div>
-            </v-col>
-            <v-col cols="12" md="4">
               <div class="child">
                 <v-btn
                   icon="fas fa-hands-helping"
@@ -117,8 +115,6 @@
                   <br />consectetur adipis
                 </p>
               </div>
-            </v-col>
-            <v-col cols="12" md="4">
               <div class="child">
                 <v-btn
                   icon="fas fa-book"
@@ -147,48 +143,28 @@
       </v-col>
       <v-col cols="12" class="imgHover">
         <v-row class="fill-height" align="center" justify="center">
-          <v-col cols="12" md="4">
-            <v-hover v-slot="{ isHovering, props }">
-              <v-card
-                :elevation="isHovering ? 12 : 2"
-                :class="{ 'on-hover': isHovering }"
-                v-bind="props"
-              >
-                <v-img :src="i2" height="225px" cover></v-img>
-              </v-card>
-            </v-hover>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-hover v-slot="{ isHovering, props }">
-              <v-card
-                :elevation="isHovering ? 12 : 2"
-                :class="{ 'on-hover': isHovering }"
-                v-bind="props"
-              >
-                <v-img :src="i5" height="225px" cover></v-img>
-              </v-card>
-            </v-hover>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-hover v-slot="{ isHovering, props }">
-              <v-card
-                :elevation="isHovering ? 12 : 2"
-                :class="{ 'on-hover': isHovering }"
-                v-bind="props"
-              >
-                <v-img :src="i9" height="225px" cover></v-img>
-              </v-card>
-            </v-hover>
-          </v-col>
+          <template v-for="(item, i) in items" :key="i">
+            <v-col cols="12" md="4">
+              <v-hover v-slot="{ isHovering, props }">
+                <v-card
+                  :elevation="isHovering ? 12 : 2"
+                  :class="{ 'on-hover': isHovering }"
+                  v-bind="props"
+                >
+                  <v-img :src="item.img" height="225px" cover></v-img>
+                </v-card>
+              </v-hover>
+            </v-col>
+          </template>
         </v-row>
       </v-col>
-      <v-col cols="12" id="testimonials" class="mt-16">
+      <v-col cols="12" id="testimonials" class="mt-16"> <!-- Added margin-top -->
         <div class="pre">
           <h2>Testimonials</h2>
           <v-row>
             <v-col cols="12" sm="4">
               <v-card class="mx-auto" max-width="344" height="">
-                <v-img :src="i3" height="200px" cover></v-img>
+                <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
                 <v-card-title> We provide you the best </v-card-title>
                 <v-card-subtitle>
                   By Church Team | 06 Jun 2024
@@ -201,7 +177,7 @@
             </v-col>
             <v-col cols="12" sm="4">
               <v-card class="mx-auto" max-width="344" height="">
-                <v-img :src="i6" height="200px" cover></v-img>
+                <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
                 <v-card-title> We provide you the best </v-card-title>
                 <v-card-subtitle>
                   By Church Team | 06 Jun 2024
@@ -214,7 +190,7 @@
             </v-col>
             <v-col cols="12" sm="4">
               <v-card class="mx-auto" max-width="344" height="">
-                <v-img :src="i7" height="200px" cover></v-img>
+                <v-img src="" height="200px" cover></v-img> <!-- Image source left blank -->
                 <v-card-title> We provide you the best </v-card-title>
                 <v-card-subtitle>
                   By Church Team | 06 Jun 2024
@@ -228,187 +204,325 @@
           </v-row>
         </div>
       </v-col>
-      <v-col cols="12" class="mt-16">
-        <v-divider></v-divider>
+      <v-col cols="12" sm="12" class="px-16 mt-16" id="contact"> <!-- Added margin-top -->
         <v-row>
-          <v-col cols="12" md="6" id="live-mass-times">
-            <div class="text-center mt-8">
-              <h2>Live Mass Times</h2>
-              <div style="width: 120px; margin: 0 auto">
-                <v-slider
-                  v-model="slider2"
-                  color="yellow"
-                  label="track-color"
-                ></v-slider>
-              </div>
-            </div>
-            <div class="padd">
-              <v-card>
-                <v-card-text>
-                  <v-sheet
-                    color="primary"
-                    height="90"
-                    elevation="15"
-                    tile
-                  ></v-sheet>
-                  <v-row class="fill-height">
-                    <v-col
-                      v-for="(week, index) in weeks"
-                      :key="index"
-                      cols="12"
-                      md="6"
-                      class="text-center"
-                    >
-                      <v-sheet
-                        class="pt-8"
-                        color="primary"
-                        height="90"
-                        elevation="15"
-                        tile
-                      >
-                        {{ week }}
-                      </v-sheet>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
+          <v-col cols="12" sm="4">
+            <div class="child">
+              <h1>Contact info.</h1>
+              <v-btn
+                icon="fas fa-map-marker-alt"
+                color=""
+                class="mt-10"
+                variant="outlined"
+              ></v-btn>
+              <br />
+              <span class="text-caption">Your Street Address, yourArea </span>
+              <br />
+              <v-btn
+                icon="fas fa-phone-alt"
+                color=""
+                class="mt-10"
+                variant="outlined"
+              ></v-btn>
+              <br />
+              <span class="text-caption">00235 - 6521</span>
+              <br />
+              <v-btn
+                icon="fas fa-envelope"
+                color=""
+                class="mt-10"
+                variant="outlined"
+              ></v-btn>
+              <br />
+              <span class="text-caption">kevin.ojwang@strathmore.edu</span>
+              <br />
             </div>
           </v-col>
-          <v-col cols="12" md="6" id="events">
-            <div class="text-center mt-8">
-              <h2>Upcoming Events</h2>
-              <div style="width: 120px; margin: 0 auto">
-                <v-slider
-                  v-model="slider2"
-                  color="yellow"
-                  label="track-color"
-                ></v-slider>
-              </div>
-              <div class="mt-4">
-                <v-img :src="i4" height="300px" contain></v-img>
-              </div>
-            </div>
+          <v-col cols="12" sm="8">
+            <h1 class="mt-8">Send your message</h1>
+            <v-divider></v-divider>
+            <span class="text-caption">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
+              fugiat officia, odio eaque exercitationem libero nesciunt placeat,
+              repellat obcaecati sed tenetur! Est labore aliquam amet
+              consequatur necessitatibus fugit obcaecati facilis!
+            </span>
+            <v-row class="mt-10">
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="message.name"
+                  label="Name"
+                  persistent-hint
+                  variant="outlined"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="message.email"
+                  label="Email"
+                  persistent-hint
+                  variant="outlined"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-text-field
+              v-model="message.content"
+              label="Message"
+              persistent-hint
+              variant="outlined"
+            ></v-text-field>
+            <v-btn color="#FBDF7E" class="mt-4" @click="sendMessage">Send</v-btn>
           </v-col>
         </v-row>
       </v-col>
+
+      <!-- New Sections -->
+      <section id="liveMassTimes" class="section">
+        <h2>Live Mass Times</h2>
+        <v-row>
+          <v-col cols="3"><strong>Time of the Day</strong></v-col>
+          <v-col cols="3"><strong>Date</strong></v-col>
+          <v-col cols="3"><strong>Theme of the Day</strong></v-col>
+          <v-col cols="3"><strong>Celebrant</strong></v-col>
+        </v-row>
+        <v-data-table :headers="massHeaders" :items="massTimes"></v-data-table>
+      </section>
+      
+      <section id="makeAnOffering" class="section">
+        <router-link to="/make-an-offering">Make an Offering</router-link>
+      </section>
+      
+      <section id="seeUpcomingEvents" class="section">
+        <h2>Upcoming Events</h2>
+        <v-row>
+          <v-col cols="4"><strong>Event Name</strong></v-col>
+          <v-col cols="4"><strong>Date</strong></v-col>
+          <v-col cols="4"><strong>Plea/Request</strong></v-col>
+        </v-row>
+        <v-data-table :headers="eventHeaders" :items="events"></v-data-table>
+      </section>
     </v-container>
-    <FooterView />
   </v-app>
 </template>
 
 <script>
-import { ref } from "vue";
-import NavBar from "../components/Navbar.vue";
-import FooterView from "../views/FooterView.vue";
-import i1 from "@/assets/i1.jpg";
-import i2 from "@/assets/i2.png";
-import i3 from "@/assets/i3.jpg";
-import i4 from "@/assets/i4.png";
-import i5 from "@/assets/i5.png";
-import i6 from "@/assets/i6.jpg";
-import i7 from "@/assets/i7.jpg";
-import i8 from "@/assets/i8.jpg";
-import i9 from "@/assets/i9.png";
+import { ref, onMounted } from 'vue'
+import { collection, addDoc, getDocs } from 'firebase/firestore'
+import { db } from '../firebase'
 
 export default {
-  components: {
-    NavBar,
-    FooterView,
+  data() {
+    return {
+      slider2: 0,
+      items: [
+        { img: 'img1.jpg' },
+        { img: 'img2.jpg' },
+        { img: 'img3.jpg' }
+      ],
+      focus: new Date(),
+      events: [],
+      message: { name: '', email: '', content: '' },
+      massHeaders: [
+        { text: 'Time of Day', value: 'timeOfDay' },
+        { text: 'Day-Date', value: 'dayDate' },
+        { text: 'Theme', value: 'theme' },
+        { text: 'Celebrant', value: 'celebrant' }
+      ],
+      massTimes: [],
+      eventHeaders: [
+        { text: 'Event Name', value: 'name' },
+        { text: 'Date', value: 'date' },
+        { text: 'Plea/Request', value: 'plea' }
+      ]
+    }
   },
   setup() {
-    const slider2 = ref(0);
-    const weeks = [
-      "Sunday: 8:00 AM - 9:00 AM",
-      "Monday: 8:00 AM - 9:00 AM",
-      "Tuesday: 8:00 AM - 9:00 AM",
-      "Wednesday: 8:00 AM - 9:00 AM",
-      "Thursday: 8:00 AM - 9:00 AM",
-      "Friday: 8:00 AM - 9:00 AM",
-      "Saturday: 8:00 AM - 9:00 AM",
-    ];
+    const focus = ref(new Date())
+    const events = ref([])
+    const message = ref({ name: '', email: '', content: '' })
+    const massHeaders = [
+      { text: 'Time of Day', value: 'timeOfDay' },
+      { text: 'Day-Date', value: 'dayDate' },
+      { text: 'Theme', value: 'theme' },
+      { text: 'Celebrant', value: 'celebrant' }
+    ]
+    const massTimes = ref([])
+    const eventHeaders = [
+      { text: 'Event Name', value: 'name' },
+      { text: 'Date', value: 'date' },
+      { text: 'Plea/Request', value: 'plea' }
+    ]
 
-    return {
-      i1,
-      i2,
-      i3,
-      i4,
-      i5,
-      i6,
-      i7,
-      i8,
-      i9,
-      slider2,
-      weeks,
-    };
-  },
-};
+    const fetchEvents = async () => {
+      const querySnapshot = await getDocs(collection(db, 'events'))
+      events.value = querySnapshot.docs.map(doc => doc.data())
+    }
+
+    const fetchMassTimes = async () => {
+      const querySnapshot = await getDocs(collection(db, 'liveMassTimes'))
+      massTimes.value = querySnapshot.docs.map(doc => doc.data())
+    }
+
+    const sendMessage = async () => {
+      try {
+        await addDoc(collection(db, 'messages'), message.value)
+        alert('Message sent successfully!')
+        message.value = { name: '', email: '', content: '' }
+      } catch (error) {
+        alert('Error sending message: ' + error.message)
+      }
+    }
+
+    onMounted(() => {
+      fetchEvents()
+      fetchMassTimes()
+    })
+
+    return { focus, events, message, massHeaders, massTimes, eventHeaders, sendMessage }
+  }
+}
 </script>
 
 <style scoped>
 .head {
-  background-color: #000;
-  padding: 100px 0;
-}
-
-.head h1 {
-  font-size: 48px;
-  font-weight: 700;
-}
-
-.head .text-grey {
-  color: #777;
-}
-
-.head .text-white {
+  background-color: #333;
   color: #fff;
 }
-
-.head .text-yellow {
-  color: #FBDF7E;
+.text-grey {
+  color: grey;
 }
-
-.image-container {
-  text-align: center;
+.text-white {
+  color: white;
 }
-
-.circular-image {
-  border-radius: 50%;
+.text-yellow {
+  color: yellow;
 }
-
-.egg {
-  text-align: center;
+.text-caption {
+  font-size: 12px;
 }
-
+.mt-4 {
+  margin-top: 16px;
+}
+.mt-8 {
+  margin-top: 32px;
+}
+.mt-9 {
+  margin-top: 36px;
+}
+.mt-10 {
+  margin-top: 40px;
+}
+.mt-16 {
+  margin-top: 64px;
+}
+.mt-n4 {
+  margin-top: -16px;
+}
 .padd {
-  padding: 30px;
+  padding: 16px;
 }
-
-.imgHover .on-hover {
-  transform: scale(1.05);
-  transition: 0.3s;
+.px-16 {
+  padding-left: 64px;
+  padding-right: 64px;
 }
-
+.hire {
+  background-color: #f7f7f7;
+  padding: 64px;
+}
+.child {
+  text-align: center;
+}
 .fill-height {
   height: 100%;
 }
-
-.pt-8 {
-  padding-top: 8px;
+.on-hover {
+  background-color: #f7f7f7;
 }
-
-.mt-16 {
-  margin-top: 16px;
+.v-container {
+  padding: 16px 0 16px 0;
 }
-
-.mt-8 {
-  margin-top: 8px;
-}
-
-.mt-4 {
-  margin-top: 4px;
-}
-
-.text-center {
+.head {
+  position: relative;
   text-align: center;
+  padding: 12px;
+  margin-bottom: 6px;
+  height: 400px;
+  width: 100%;
+  color: white;
+}
+.head:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 50%;
+  background: black;
+  transform: skew(0deg, 6deg);
+}
+.head:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 50%;
+  background: black;
+  transform: skew(0deg, -6deg);
+}
+.egg {
+  display: block;
+  margin-left: 100px;
+  margin-top: 50px;
+  width: 356px;
+  height: 300px;
+  background-color: #fbdf7e;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+.first {
+  width: 100%;
+  height: 280px;
+  text-align: center;
+  padding: 2rem 2rem;
+}
+.child {
+  display: inline-block;
+  padding: 2rem 1rem;
+  vertical-align: middle;
+  text-align: center;
+  margin-right: 8px;
+}
+.imgHover {
+  padding: 0 200px;
+}
+.pre {
+  width: 100%;
+  height: 380px;
+  text-align: center;
+  padding: 0 200px;
+  background-color: #f5f5f5;
+}
+.hire {
+  width: 100%;
+  height: 200px;
+  padding: 0 200px;
+  background-color: #e9e9e9;
+  margin-top: -24px;
+}
+.section {
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.section h2 {
+  margin-bottom: 20px;
+}
+
+#testimonials v-card {
+  margin-bottom: 20px;
+}
+
+#seeUpcomingEvents v-data-table {
+  margin-top: 20px;
 }
 </style>
