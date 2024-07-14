@@ -8,13 +8,13 @@
 
         <v-spacer></v-spacer>
         <v-btn text @click="scroll('liveMassTimes')" class="text-yellow">Live Mass Times</v-btn>
-
         <v-btn text @click="scroll('contact')">Admin Help</v-btn>
         <v-btn text @click="navigate('MakeAnOffering')">Make an Offering</v-btn>
         <v-btn text @click="scroll('seeUpcomingEvents')">See Upcoming Events</v-btn>
         <v-btn text @click="scroll('testimonials')">Testimonials</v-btn>
         <v-btn text v-if="isAuthenticated" @click="logout">Log Out</v-btn>
         <v-btn text v-else @click="navigateToLogin">Login</v-btn>
+        <v-btn text v-else @click="navigateToRegister">Register</v-btn>
       </v-app-bar>
 
       <div id="nav-links">
@@ -47,13 +47,13 @@ export default {
           const userData = userDoc.data()
           isAdmin.value = userData.role === 'admin'
           if (isAdmin.value) {
-            router.push('/admin');  // Redirect to admin page if user is admin
+            router.push('/admin');
           } else if (userData.role === 'church member') {
-            router.push('/member');  // Redirect to member page if user is church member
+            router.push('/member');
           } else if (userData.role === 'priest') {
-            router.push('/priest');  // Redirect to priest page if user is priest
+            router.push('/priest');
           } else if (userData.role === 'youth member') {
-              router.push('/youth');  // Redirect to priest page if user is priest
+            router.push('/youth');
           }
         } else {
           isAdmin.value = false
@@ -73,8 +73,8 @@ export default {
 
     const logout = () => {
       auth.signOut().then(() => {
-        router.push('/login');  // Redirect to login page after logout
-        isAuthenticated.value = false; // Ensure this is set to false on logout
+        router.push('/login');
+        isAuthenticated.value = false;
       });
     };
 
@@ -83,10 +83,14 @@ export default {
     };
 
     const navigateToLogin = () => {
-      router.push('/login'); // Ensure the route name matches the route defined in your router
+      router.push('/login');
     };
 
-    return { isAuthenticated, isAdmin, logout, navigate, navigateToLogin };
+    const navigateToRegister = () => {
+      router.push('/register');
+    };
+
+    return { isAuthenticated, isAdmin, logout, navigate, navigateToLogin, navigateToRegister };
   },
   methods: {
     scroll(refName) {

@@ -1,5 +1,6 @@
 <template>
-  <v-container>
+  <v-app class="background-container">
+    <v-container class="overlay">
     <h2 class="title">Priest Dashboard</h2>
     <v-row justify="center">
       <v-col cols="12" sm="6" md="3">
@@ -21,7 +22,8 @@
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
@@ -36,6 +38,15 @@ export default {
 </script>
 
 <style scoped>
+.background-container {
+  background-image: url('@/assets/christiancounseling.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  width: 100vw;
+  position: relative;
+}
 .title {
   text-align: center;
   color: black;

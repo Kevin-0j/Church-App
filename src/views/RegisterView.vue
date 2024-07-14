@@ -20,12 +20,12 @@
           v-model="register_form.confirmPassword"
           @focus="onFocus"
           @blur="onBlur" />
+        <label for="role">Role</label>
         <select v-model="register_form.role" required>
           <option disabled value="">Select your role</option>
           <option value="youth member">Youth Member</option>
           <option value="church member">Church Member</option>
-          <option value="priest">Priest</option>
-         
+          
         </select>
         <input 
           type="submit" 
@@ -80,26 +80,18 @@
 
 <script>
 import { ref } from 'vue';
-import store from '../store';
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from '../firebase';
 import router from '../router';
 
 export default {
   setup() {
-    const isRegistering = ref(false);
+    const isRegistering = ref(true);
     const login_form = ref({});
     const register_form = ref({});
     const resetEmail = ref('');
     const resetPasswordVisible = ref(false);
-
-    const login = () => {
-      store.dispatch('login', login_form.value)
-        .then(() => {
-          router.push('/home');
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
-    };
 
     const register = () => {
       if (register_form.value.password !== register_form.value.confirmPassword) {
@@ -107,19 +99,26 @@ export default {
         return;
       }
 
-      store.dispatch('register', {
-        email: register_form.value.email,
-        password: register_form.value.password,
-        role: register_form.value.role
-      })
-      .then(() => {
-        alert('Registration successful! Please check your email for verification.');
-        isRegistering.value = false;
-        router.push('/login'); // Redirect to login page after successful registration
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+      const auth = getAuth();
+      createUserWithEmailAndPassword(auth, register_form.value.email, register_form.value.password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          const userDocRef = doc(db, 'users', user.uid);
+          setDoc(userDocRef, {
+            email: register_form.value.email,
+            role: register_form.value.role
+          }).then(() => {
+            sendEmailVerification(user)
+              .then(() => {
+                alert('Registration successful! Please check your email for verification.');
+                isRegistering.value = false;
+                router.push('/login');
+              });
+          });
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
     };
 
     const onFocus = (event) => {
@@ -166,7 +165,6 @@ export default {
       register_form,
       resetEmail,
       resetPasswordVisible,
-      login,
       register,
       onFocus,
       onBlur,

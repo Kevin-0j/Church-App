@@ -1,5 +1,6 @@
 <template>
   <v-app id="make-an-offering">
+    
     <NavBar />
     <v-container fluid class="d-flex align-center justify-center fill-height">
       <div class="text-center">
@@ -35,6 +36,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 .fill-height {
   min-height: 100vh;
   background-color: #333;

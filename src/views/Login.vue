@@ -1,14 +1,13 @@
 <template>
 	<main class="login">
 	  <section class="forms">
-		<form @submit.prevent="login">
+		<form class="login" @submit.prevent="login">
 		  <h2>Login</h2>
 		  <input 
 			type="email" 
 			placeholder="Email address"
 			v-model="login_form.email"
-			@focus="onFocus"
-			@blur="onBlur" />
+			 >
 		  <input 
 			type="password" 
 			placeholder="Password" 
@@ -48,7 +47,9 @@
   
   <script>
   import { ref } from 'vue';
-  import store from '../store';
+  import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+  import { doc, getDoc } from 'firebase/firestore';
+  import { db } from '../firebase';
   import router from '../router';
   
   export default {
@@ -68,28 +69,41 @@
 	  };
   
 	  const login = () => {
-		store.dispatch('login', login_form.value)
-		  .then(() => {
-			const userRole = store.getters.userRole; // Assuming you have a getter for user role in Vuex store
-			switch (userRole) {
-			  case 'youth member':
-				router.push('/youth');
-				break;
-			  case 'church member':
-				router.push('/member');
-				break;
-			  case 'admin':
-				router.push('/admin');
-				break;	
-			  case 'priest':
-				router.push('/priest');
-				break;
-			  default:
-				router.push('/home'); // Default redirect if role not specified
+		const auth = getAuth();
+		signInWithEmailAndPassword(auth, login_form.value.email, login_form.value.password)
+		  .then(async (userCredential) => {
+			const user = userCredential.user;
+			if (!user.emailVerified) {
+			  alert("Please verify your email before logging in.");
+			  auth.signOut();
+			  return;
+			}
+			const userDoc = await getDoc(doc(db, 'users', user.uid));
+			if (userDoc.exists()) {
+			  const userData = userDoc.data();
+			  switch (userData.role) {
+				case 'youth member':
+				  router.push('/youth');
+				  break;
+				case 'church member':
+				  router.push('/member');
+				  break;
+				case 'admin':
+				  router.push('/admin');
+				  break;
+				case 'priest':
+				  router.push('/priest');
+				  break;
+				default:
+				  router.push('/home');
+			  }
+			} else {
+			  alert("No role assigned to this user.");
+			  auth.signOut();
 			}
 		  })
 		  .catch((error) => {
-			alert(error.message);  // Handle login error
+			alert(error.message);
 		  });
 	  };
   
@@ -103,17 +117,17 @@
 			alert('Password reset email sent!');
 		  })
 		  .catch((error) => {
-			alert(error.message);  // Handle reset password error
+			alert(error.message);
 		  });
 	  };
   
 	  const signUpWithGoogle = () => {
 		store.dispatch('signInWithGoogle')
 		  .then(() => {
-			router.push('/home');  // Redirect to home after Google sign-in
+			router.push('/home');
 		  })
 		  .catch((error) => {
-			alert(error.message);  // Handle Google sign-in error
+			alert(error.message);
 		  });
 	  };
   
@@ -136,7 +150,6 @@
 	}
   };
   </script>
-  
   
   <style scoped>
   .forms {
@@ -173,7 +186,8 @@
 	margin-bottom: 2rem;
   }
   
-  input {
+  input,
+  select {
 	appearance: none;
 	border: none;
 	outline: none;
@@ -189,11 +203,13 @@
 	transition: border-color 0.4s, background-color 0.4s;
   }
   
-  input:not([type="submit"]) {
+  input:not([type="submit"]),
+  select {
 	opacity: 0.8;
   }
   
-  input:focus:not([type="submit"]) {
+  input:focus:not([type="submit"]),
+  select {
 	opacity: 1;
 	border-color: yellow;
   }
@@ -314,5 +330,4 @@
 	cursor: pointer;
   }
   </style>
-  
   

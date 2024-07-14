@@ -12,7 +12,7 @@ import PriestView from '@/views/PriestView.vue'
 import PriestSchedule from '../views/PriestSchedule.vue'
 import PriestUpcomingEvents from '../views/PriestUpcomingEvents.vue'
 import PriestCongregants from '../views/PriestCongregants.vue'
-import LoginView from '../views/Login.vue'
+import Login from '../views/Login.vue'
 import RegisterView from '../views/RegisterView.vue'
 import UpcomingEvents from '../views/UpcomingEvents.vue'
 import BookEvents from '../views/BookEvents.vue'
@@ -37,7 +37,7 @@ const routes = [
   { path: '/member', name: 'Member', component: MemberView },
   { path: '/priest', name: 'Priest', component: PriestView },
  
-  { path: '/login', name: 'Login', component: LoginView },
+  { path: '/login', name: 'Login', component: Login },
   { path: '/upcoming-events', name: 'UpcomingEvents', component: UpcomingEvents },
   {
     path: '/priest/schedule',

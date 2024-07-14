@@ -1,7 +1,7 @@
 <template>
-    <v-app>
+    <v-app class ="background-container">
       <NavBar />
-      <v-container>
+      <v-container class="overlay">
         <h1 class="title">Priest Consultation</h1>
         <v-form @submit.prevent="submitForm">
           <v-text-field v-model="name" label="Your Name" required />
@@ -35,6 +35,7 @@
   </script>
   
   <style scoped>
+  
   .title {
     margin-bottom: 20px;
     text-align: center;
