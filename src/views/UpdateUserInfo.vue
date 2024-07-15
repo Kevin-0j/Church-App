@@ -17,6 +17,16 @@
             v-model="user.phone"
             label="Phone"
           ></v-text-field>
+          <v-text-field
+            v-model="user.address"
+            label="Address"
+          ></v-text-field>
+          <v-select
+            v-model="user.gender"
+            :items="genders"
+            label="Gender"
+            required
+          ></v-select>
           <v-btn type="submit" color="primary">Update</v-btn>
         </v-form>
       </v-container>
@@ -26,7 +36,7 @@
   <script>
   import { ref, onMounted } from 'vue';
   import { getAuth } from 'firebase/auth';
-  import { doc, getDoc, updateDoc } from 'firebase/firestore';
+  import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
   import { db } from '../firebase'; // Adjust the path to your Firebase configuration file
   
   export default {
@@ -35,7 +45,10 @@
         name: '',
         email: '',
         phone: '',
+        address: '',
+        gender: ''
       });
+      const genders = ref(['Male', 'Female', 'Other']);
       const auth = getAuth();
   
       const fetchUserInfo = async () => {
@@ -48,6 +61,24 @@
               name: userData.name || '',
               email: userData.email || '',
               phone: userData.phone || '',
+              address: userData.address || '',
+              gender: userData.gender || ''
+            };
+          } else {
+            // If the document doesn't exist, initialize it
+            await setDoc(doc(db, 'users', currentUser.uid), {
+              name: '',
+              email: currentUser.email,
+              phone: '',
+              address: '',
+              gender: ''
+            });
+            user.value = {
+              name: '',
+              email: currentUser.email,
+              phone: '',
+              address: '',
+              gender: ''
             };
           }
         }
@@ -61,6 +92,8 @@
             name: user.value.name,
             email: user.value.email,
             phone: user.value.phone,
+            address: user.value.address,
+            gender: user.value.gender
           });
           alert('User information updated successfully');
         }
@@ -70,9 +103,10 @@
   
       return {
         user,
-        updateUserInfo,
+        genders,
+        updateUserInfo
       };
-    },
+    }
   };
   </script>
   

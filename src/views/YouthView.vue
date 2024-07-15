@@ -29,18 +29,29 @@
             <div class="text">Pay Tithe/Offering</div>
           </v-card>
         </v-col>
+        <!-- New Update User Info card -->
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="functionality-card" @click="navigateTo('/update-user-info')">
+            <v-icon class="icon">mdi-account-edit</v-icon>
+            <div class="text">Update User Info</div>
+          </v-card>
+        </v-col>
       </v-row>
     </v-container>
   </v-app>
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
+
 export default {
   name: 'YouthView',
-  methods: {
-    navigateTo(route) {
-      this.$router.push(route);
-    }
+  setup() {
+    const router = useRouter();
+    const navigateTo = (route) => {
+      router.push(route);
+    };
+    return { navigateTo };
   }
 };
 </script>
@@ -55,6 +66,12 @@ export default {
   width: 100vw;
   position: relative;
 }
+
+.overlay {
+  position: relative;
+  z-index: 1;
+}
+
 .title {
   text-align: center;
   color: black;
