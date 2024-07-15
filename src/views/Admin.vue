@@ -7,7 +7,7 @@
       <div class="stats">
         <div>
           <h3>Members registered last month</h3>
-          <p>30</p>
+          <p>{{ userCount }}</p>
           <p class="text-caption">+20% month over month</p>
         </div>
         <div>
@@ -24,11 +24,15 @@
       <div class="charts mt-8">
         <div>
           <h3>Report on tithes collected in a month</h3>
-          <div class="chart-placeholder">[Chart]</div>
+          <HighchartComponent :chartOptions="titheChartOptions" />
         </div>
         <div>
           <h3>Report on number of church members registered in a month</h3>
-          <div class="chart-placeholder">[Chart]</div>
+          <HighchartComponent :chartOptions="userChartOptions" />
+        </div>
+        <div>
+          <h3>Report on messages sent to admin</h3>
+          <HighchartComponent :chartOptions="messageChartOptions" />
         </div>
       </div>
     </div>
@@ -118,12 +122,18 @@
 
 <script>
 import { ref, onMounted } from 'vue';
-import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
+import HighchartComponent from './HighchartComponent.vue';
 
 export default {
+  components: {
+    HighchartComponent
+  },
   setup() {
     const users = ref([]);
+    const userCount = ref(0);
+    const messageCount = ref(0);
     const userHeaders = [
       { text: 'Name', value: 'name' },
       { text: 'Gender', value: 'gender' },
@@ -166,16 +176,26 @@ export default {
     const fetchUsers = async () => {
       const querySnapshot = await getDocs(collection(db, 'users'));
       users.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      userCount.value = users.value.length;
+      console.log('Users:', users.value); // Debugging log
     };
 
     const fetchMassTimes = async () => {
       const querySnapshot = await getDocs(collection(db, 'liveMassTimes'));
       massTimes.value = querySnapshot.docs.map(doc => doc.data());
+      console.log('Mass Times:', massTimes.value); // Debugging log
     };
 
     const fetchEvents = async () => {
       const querySnapshot = await getDocs(collection(db, 'events'));
       events.value = querySnapshot.docs.map(doc => doc.data());
+      console.log('Events:', events.value); // Debugging log
+    };
+
+    const fetchMessages = async () => {
+      const querySnapshot = await getDocs(collection(db, 'messages'));
+      messageCount.value = querySnapshot.docs.length;
+      console.log('Messages:', messageCount.value); // Debugging log
     };
 
     const addMassTime = async () => {
@@ -233,14 +253,78 @@ export default {
       editDialog.value = false;
     };
 
+    // Real-time listeners
     onMounted(() => {
-      fetchUsers();
+      const usersCollection = collection(db, 'users');
+      onSnapshot(usersCollection, (snapshot) => {
+        users.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        userCount.value = users.value.length;
+        updateUserChart();
+      });
+
+      const messagesCollection = collection(db, 'messages');
+      onSnapshot(messagesCollection, (snapshot) => {
+        messageCount.value = snapshot.docs.length;
+        updateMessageChart();
+      });
+
       fetchMassTimes();
       fetchEvents();
     });
 
+    const titheChartOptions = ref({
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: 'Tithes Collected'
+      },
+      series: [{
+        data: [1, 2, 3, 4, 5]
+      }]
+    });
+
+    const userChartOptions = ref({
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: 'Users Registered'
+      },
+      series: [{
+        data: []
+      }]
+    });
+
+    const messageChartOptions = ref({
+      chart: {
+        type: 'pie'
+      },
+      title: {
+        text: 'Messages to Admin'
+      },
+      series: [{
+        data: []
+      }]
+    });
+
+    const updateUserChart = () => {
+      userChartOptions.value.series[0].data = users.value.map(user => ({
+        name: user.name,
+        y: 1
+      }));
+    };
+
+    const updateMessageChart = () => {
+      messageChartOptions.value.series[0].data = [
+        { name: 'Messages', y: messageCount.value }
+      ];
+    };
+
     return {
       users,
+      userCount,
+      messageCount,
       userHeaders,
       newMassTime,
       massTimes,
@@ -255,7 +339,10 @@ export default {
       editUser,
       updateUser,
       deleteUser,
-      closeDialog
+      closeDialog,
+      titheChartOptions,
+      userChartOptions,
+      messageChartOptions
     };
   }
 };
@@ -289,7 +376,7 @@ export default {
 }
 .chart-placeholder {
   width: 100%;
-  height: 200px;
+  height: 400px;
   background: #f0f0f0;
   display: flex;
   align-items: center;

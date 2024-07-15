@@ -1,29 +1,29 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
-import AdminHelpView from '../views/AdminHelpView.vue'
-import MakeAnOfferingView from '../views/MakeAnOfferingView.vue'
-import LiveMassTimesView from '../views/LiveMassTimesView.vue'
-import TestimonialsView from '../views/TestimonialsView.vue'
-import SeeUpcomingEventsView from '../views/SeeUpcomingEventsView.vue'
-import Admin from '../views/Admin.vue'
-import MemberView from '@/views/MemberView.vue'
-import PriestView from '@/views/PriestView.vue'
-import PriestSchedule from '../views/PriestSchedule.vue'
-import PriestUpcomingEvents from '../views/PriestUpcomingEvents.vue'
-import PriestCongregants from '../views/PriestCongregants.vue'
-import Login from '../views/Login.vue'
-import RegisterView from '../views/RegisterView.vue'
-import UpcomingEvents from '../views/UpcomingEvents.vue'
-import BookEvents from '../views/BookEvents.vue'
-import PriestConsultation from '../views/PriestConsultation.vue'
-import PayTithes from '../views/PayTithes.vue'
-import YouthView from '../views/YouthView.vue'
-import YouthUpcomingEventsView from '../views/YouthUpcomingEvents.vue'
-import YouthChurchEventsView from '../views/YouthChurchEvents.vue'
-import YouthPriestConsultationView from '../views/YouthPriestConsultation.vue'
-import YouthPayTithesView from '../views/YouthPayTithes.vue'
-import UpdateUserInfo from '../views/UpdateUserInfo.vue' // Import the new component
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import AboutView from '../views/AboutView.vue';
+import AdminHelpView from '../views/AdminHelpView.vue';
+import MakeAnOfferingView from '../views/MakeAnOfferingView.vue';
+import LiveMassTimesView from '../views/LiveMassTimesView.vue';
+import TestimonialsView from '../views/TestimonialsView.vue';
+import SeeUpcomingEventsView from '../views/SeeUpcomingEventsView.vue';
+import Admin from '../views/Admin.vue';
+import MemberView from '@/views/MemberView.vue';
+import PriestView from '@/views/PriestView.vue';
+import PriestSchedule from '../views/PriestSchedule.vue';
+import PriestUpcomingEvents from '../views/PriestUpcomingEvents.vue';
+import PriestCongregants from '../views/PriestCongregants.vue';
+import Login from '../views/Login.vue';
+import RegisterView from '../views/RegisterView.vue';
+import UpcomingEvents from '../views/UpcomingEvents.vue';
+import BookEvents from '../views/BookEvents.vue';
+import PriestConsultation from '../views/PriestConsultation.vue';
+import PayTithes from '../views/PayTithes.vue';
+import YouthView from '../views/YouthView.vue';
+import YouthUpcomingEventsView from '../views/YouthUpcomingEvents.vue';
+import YouthChurchEventsView from '../views/YouthChurchEvents.vue';
+import YouthPriestConsultationView from '../views/YouthPriestConsultation.vue';
+import YouthPayTithesView from '../views/YouthPayTithes.vue';
+import UpdateUserInfo from '../views/UpdateUserInfo.vue'; // Import the new component
 
 const routes = [
   { path: '/', name: 'Home', component: HomeView },
@@ -51,11 +51,11 @@ const routes = [
   { path: '/priest/upcoming-events', name: 'PriestUpcomingEvents', component: PriestUpcomingEvents },
   { path: '/priest/congregants', name: 'PriestCongregants', component: PriestCongregants },
   { path: '/update-user-info', name: 'UpdateUserInfo', component: UpdateUserInfo } // Add the new route
-]
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
-})
+});
 
-export default router
+export default router;

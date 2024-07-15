@@ -11,6 +11,8 @@
     "core-js": "^3.8.3",
     "express": "^4.19.2",
     "firebase": "^10.12.2",
+    "highcharts": "^11.4.6",
+    "highcharts-vue": "^2.0.1",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
