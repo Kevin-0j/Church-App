@@ -41,7 +41,24 @@
       <p class="subheading">Data sourced from Firebase:</p>
       <v-data-table
         :headers="userHeaders"
-        :items="users"
+        :items="churchMembers"
+        item-key="id"
+        class="elevation-1"
+        hide-default-footer
+      >
+        <template v-slot:item.action="{ item }">
+          <v-btn small @click="editUser(item)">Edit</v-btn>
+          <v-btn small color="error" @click="deleteUser(item.id)">Delete</v-btn>
+        </template>
+      </v-data-table>
+    </div>
+
+    <div class="padd mt-8">
+      <h3>Priests List</h3>
+      <p class="subheading">Data sourced from Firebase:</p>
+      <v-data-table
+        :headers="userHeaders"
+        :items="priests"
         item-key="id"
         class="elevation-1"
         hide-default-footer
@@ -111,6 +128,7 @@
             <v-text-field v-model="editedUser.email" label="Email" required></v-text-field>
             <v-text-field v-model="editedUser.phone" label="Telephone" required></v-text-field>
             <v-text-field v-model="editedUser.address" label="Location" required></v-text-field>
+            <v-text-field v-model="editedUser.role" label="Role" required></v-text-field>
             <v-btn type="submit" color="primary">Save</v-btn>
             <v-btn @click="closeDialog">Cancel</v-btn>
           </v-form>
@@ -131,6 +149,8 @@ export default {
     HighchartComponent
   },
   setup() {
+    const churchMembers = ref([]);
+    const priests = ref([]);
     const users = ref([]);
     const userCount = ref(0);
     const messageCount = ref(0);
@@ -140,6 +160,7 @@ export default {
       { text: 'Email', value: 'email' },
       { text: 'Telephone', value: 'phone' },
       { text: 'Location', value: 'address' },
+      { text: 'Role', value: 'role' },
       { text: 'Date added', value: 'dateAdded' },
       { text: 'Action', value: 'action', sortable: false }
     ];
@@ -175,27 +196,26 @@ export default {
 
     const fetchUsers = async () => {
       const querySnapshot = await getDocs(collection(db, 'users'));
-      users.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      userCount.value = users.value.length;
-      console.log('Users:', users.value); // Debugging log
+      const usersData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      churchMembers.value = usersData.filter(user => user.role === 'church member' || user.role === 'youth member');
+      priests.value = usersData.filter(user => user.role === 'priest');
+      users.value = usersData;
+      userCount.value = usersData.length;
     };
 
     const fetchMassTimes = async () => {
       const querySnapshot = await getDocs(collection(db, 'liveMassTimes'));
       massTimes.value = querySnapshot.docs.map(doc => doc.data());
-      console.log('Mass Times:', massTimes.value); // Debugging log
     };
 
     const fetchEvents = async () => {
       const querySnapshot = await getDocs(collection(db, 'events'));
       events.value = querySnapshot.docs.map(doc => doc.data());
-      console.log('Events:', events.value); // Debugging log
     };
 
     const fetchMessages = async () => {
       const querySnapshot = await getDocs(collection(db, 'messages'));
       messageCount.value = querySnapshot.docs.length;
-      console.log('Messages:', messageCount.value); // Debugging log
     };
 
     const addMassTime = async () => {
@@ -231,7 +251,8 @@ export default {
           gender: editedUser.value.gender,
           email: editedUser.value.email,
           phone: editedUser.value.phone,
-          address: editedUser.value.address
+          address: editedUser.value.address,
+          role: editedUser.value.role
         });
         fetchUsers();
         closeDialog();
@@ -257,8 +278,11 @@ export default {
     onMounted(() => {
       const usersCollection = collection(db, 'users');
       onSnapshot(usersCollection, (snapshot) => {
-        users.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        userCount.value = users.value.length;
+        const usersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        churchMembers.value = usersData.filter(user => user.role === 'church member' || user.role === 'youth member');
+        priests.value = usersData.filter(user => user.role === 'priest');
+        users.value = usersData;
+        userCount.value = usersData.length;
         updateUserChart();
       });
 
@@ -322,6 +346,8 @@ export default {
     };
 
     return {
+      churchMembers,
+      priests,
       users,
       userCount,
       messageCount,

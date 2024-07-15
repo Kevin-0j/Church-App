@@ -1,38 +1,50 @@
 <template>
   <v-app class="background-container">
     <v-container class="overlay">
-    <h2 class="title">Priest Dashboard</h2>
-    <v-row justify="center">
-      <v-col cols="12" sm="6" md="3">
-        <v-card class="functionality-card" @click="navigateTo('PriestSchedule')">
-          <v-icon class="icon">mdi-calendar-clock</v-icon>
-          <div class="text">View Schedule</div>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="6" md="3">
-        <v-card class="functionality-card" @click="navigateTo('PriestUpcomingEvents')">
-          <v-icon class="icon">mdi-calendar"></v-icon>
-          <div class="text">Upcoming Church Events</div>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="6" md="3">
-        <v-card class="functionality-card" @click="navigateTo('PriestCongregants')">
-          <v-icon class="icon">mdi-account-group</v-icon>
-          <div class="text">View Congregants</div>
-        </v-card>
-      </v-col>
-    </v-row>
+      <h2 class="title">Priest Dashboard</h2>
+      <v-row justify="center" class="functionality-row">
+        <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
+          <v-card class="functionality-card" @click="navigateTo('PriestSchedule')">
+            <v-icon class="icon">mdi-calendar-clock</v-icon>
+            <div class="text">View Schedule</div>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
+          <v-card class="functionality-card" @click="navigateTo('PriestUpcomingEvents')">
+            <v-icon class="icon">mdi-calendar"></v-icon>
+            <div class="text">Upcoming Church Events</div>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row justify="center" class="functionality-row">
+        <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
+          <v-card class="functionality-card" @click="navigateTo('PriestCongregants')">
+            <v-icon class="icon">mdi-account-group</v-icon>
+            <div class="text">View Congregants</div>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
+          <v-card class="functionality-card" @click="navigateTo('UpdateUserInfo')">
+            <v-icon class="icon">mdi-account-edit</v-icon>
+            <div class="text">Update User Info</div>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </v-app>
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
+
 export default {
   name: 'PriestView',
-  methods: {
-    navigateTo(route) {
-      this.$router.push({ name: route });
-    }
+  setup() {
+    const router = useRouter();
+    const navigateTo = (route) => {
+      router.push({ name: route });
+    };
+    return { navigateTo };
   }
 };
 </script>
@@ -47,9 +59,27 @@ export default {
   width: 100vw;
   position: relative;
 }
+
+.overlay {
+  position: relative;
+  z-index: 1;
+}
+
 .title {
   text-align: center;
-  color: black;
+  color: yellow;
+  font-size: 3rem;
+  margin-bottom: 40px;
+  text-shadow: 2px 2px 5px black;
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.functionality-row {
   margin-bottom: 20px;
 }
 
@@ -63,11 +93,13 @@ export default {
   padding: 40px;
   border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .functionality-card:hover {
   transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .icon {

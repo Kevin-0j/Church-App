@@ -12,8 +12,7 @@
 			type="password" 
 			placeholder="Password" 
 			v-model="login_form.password"
-			@focus="onFocus"
-			@blur="onBlur" />
+			/>
 		  <input 
 			type="submit" 
 			value="Login" />
@@ -36,8 +35,7 @@
 			type="email" 
 			placeholder="Enter your email address"
 			v-model="resetEmail"
-			@focus="onFocus"
-			@blur="onBlur" />
+			 />
 		  <button @click="resetPassword" class="reset-button">Reset Password</button>
 		  <button @click="resetPasswordVisible = false" class="cancel-button">Cancel</button>
 		</div>

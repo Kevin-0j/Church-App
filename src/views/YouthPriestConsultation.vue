@@ -35,6 +35,15 @@
   </script>
   
   <style scoped>
+  .background-container {
+    background-image: url('@/assets/christiancounseling.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    width: 100vw;
+    position: relative;
+  }
   
   .title {
     margin-bottom: 20px;

@@ -2,35 +2,34 @@
   <v-app class="background-container">
     <v-container class="overlay">
       <h2 class="title">Member Dashboard</h2>
-      <v-row justify="center">
-        <v-col cols="12" sm="6" md="3">
+      <v-row justify="center" class="functionality-row">
+        <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
           <v-card class="functionality-card" @click="navigate('UpcomingEvents')">
             <v-icon class="icon">mdi-calendar</v-icon>
             <div class="text">Upcoming Events/Activities</div>
           </v-card>
         </v-col>
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
           <v-card class="functionality-card" @click="navigate('BookEvents')">
             <v-icon class="icon">mdi-bookmark</v-icon>
             <div class="text">Book Church Events</div>
           </v-card>
         </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
           <v-card class="functionality-card" @click="navigate('PriestConsultation')">
             <v-icon class="icon">mdi-account-box</v-icon>
             <div class="text">Priest Consultation</div>
           </v-card>
         </v-col>
-        <v-col cols="12" sm="6" md="3">
+      </v-row>
+      <v-row justify="center" class="functionality-row">
+        <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
           <v-card class="functionality-card" @click="navigate('PayTithes')">
             <v-icon class="icon">mdi-cash</v-icon>
             <div class="text">Pay Tithe/Offering</div>
           </v-card>
         </v-col>
-        <!-- New Update User Info card -->
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
           <v-card class="functionality-card" @click="navigate('UpdateUserInfo')">
             <v-icon class="icon">mdi-account-edit</v-icon>
             <div class="text">Update User Info</div>
@@ -73,7 +72,19 @@ export default {
 
 .title {
   text-align: center;
-  color: black;
+  color: yellow;
+  font-size: 3rem;
+  margin-bottom: 40px;
+  text-shadow: 2px 2px 5px black;
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.functionality-row {
   margin-bottom: 20px;
 }
 
@@ -87,11 +98,13 @@ export default {
   padding: 40px;
   border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .functionality-card:hover {
   transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .icon {

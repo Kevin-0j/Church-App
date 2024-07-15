@@ -12,20 +12,17 @@
           type="password" 
           placeholder="Password" 
           v-model="register_form.password"
-          @focus="onFocus"
-          @blur="onBlur" />
+           />
         <input 
           type="password" 
           placeholder="Re-enter Password"
           v-model="register_form.confirmPassword"
-          @focus="onFocus"
-          @blur="onBlur" />
+          />
         <label for="role">Role</label>
         <select v-model="register_form.role" required>
           <option disabled value="">Select your role</option>
           <option value="youth member">Youth Member</option>
           <option value="church member">Church Member</option>
-          
         </select>
         <input 
           type="submit" 
@@ -39,14 +36,12 @@
           type="email" 
           placeholder="Email address"
           v-model="login_form.email"
-          @focus="onFocus"
-          @blur="onBlur" />
+           />
         <input 
           type="password" 
           placeholder="Password" 
           v-model="login_form.password"
-          @focus="onFocus"
-          @blur="onBlur" />
+           />
         <input 
           type="submit" 
           value="Login" />
