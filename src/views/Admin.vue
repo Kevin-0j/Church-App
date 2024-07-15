@@ -34,47 +34,27 @@
     </div>
     <div class="padd mt-8">
       <h3>Church Members List</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Gender</th>
-            <th>Email</th>
-            <th>Telephone</th>
-            <th>Location</th>
-            <th>Date added</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Emmanuel Arungwaefwe</td>
-            <td>Male</td>
-            <td>emanu@gmail.com</td>
-            <td>0771445116</td>
-            <td>Boroto</td>
-            <td>2018-06-05</td>
-            <td><a href="#">Edit</a> <a href="#">Delete</a></td>
-          </tr>
-          <tr>
-            <td>Grace Mwasou</td>
-            <td>Female</td>
-            <td>grace@gmail.com</td>
-            <td>0771445116</td>
-            <td>Komolo</td>
-            <td>2018-06-05</td>
-            <td><a href="#">Edit</a> <a href="#">Delete</a></td>
-          </tr>
-        </tbody>
-      </table>
+      <p class="subheading">Data sourced from Firebase:</p>
+      <v-data-table
+        :headers="userHeaders"
+        :items="users"
+        item-key="id"
+        class="elevation-1"
+        hide-default-footer
+      >
+        <template v-slot:item.action="{ item }">
+          <v-btn small @click="editUser(item)">Edit</v-btn>
+          <v-btn small color="error" @click="deleteUser(item.id)">Delete</v-btn>
+        </template>
+      </v-data-table>
     </div>
 
-    <!-- New Section for Live Mass Times -->
-    <div class="padd mt-8">
+    <!-- Section for Live Mass Times -->
+    <div class="padd mt-8 section">
       <h3>Live Mass Times</h3>
       <v-form @submit.prevent="addMassTime">
         <v-row>
-          <v-col cols="12" sm="2">
+          <v-col cols="12" sm="3">
             <v-text-field v-model="newMassTime.timeOfDay" label="Time of Day" required></v-text-field>
           </v-col>
           <v-col cols="12" sm="3">
@@ -83,19 +63,19 @@
           <v-col cols="12" sm="3">
             <v-text-field v-model="newMassTime.theme" label="Theme of the Day" required></v-text-field>
           </v-col>
-          <v-col cols="12" sm="2">
+          <v-col cols="12" sm="3">
             <v-text-field v-model="newMassTime.celebrant" label="Celebrant" required></v-text-field>
           </v-col>
-          <v-col cols="12" sm="2">
-            <v-btn color="primary" type="submit">Add</v-btn>
+          <v-col cols="12" sm="12" class="text-center">
+            <v-btn color="primary" type="submit">Add Mass Time</v-btn>
           </v-col>
         </v-row>
       </v-form>
-      <v-data-table :headers="massHeaders" :items="massTimes"></v-data-table>
+      <v-data-table :headers="massHeaders" :items="massTimes" hide-default-footer class="elevation-1 mt-4"></v-data-table>
     </div>
 
-    <!-- New Section for Upcoming Events -->
-    <div class="padd mt-8">
+    <!-- Section for Upcoming Events -->
+    <div class="padd mt-8 section">
       <h3>Upcoming Events</h3>
       <v-form @submit.prevent="addEvent">
         <v-row>
@@ -108,94 +88,184 @@
           <v-col cols="12" sm="4">
             <v-text-field v-model="newEvent.plea" label="Plea/Request" required></v-text-field>
           </v-col>
-          <v-col cols="12" sm="2">
-            <v-btn color="primary" type="submit">Add</v-btn>
+          <v-col cols="12" sm="12" class="text-center">
+            <v-btn color="primary" type="submit">Add Event</v-btn>
           </v-col>
         </v-row>
       </v-form>
-      <v-data-table :headers="eventHeaders" :items="events"></v-data-table>
+      <v-data-table :headers="eventHeaders" :items="events" hide-default-footer class="elevation-1 mt-4"></v-data-table>
     </div>
+
+    <!-- Edit User Dialog -->
+    <v-dialog v-model="editDialog" max-width="500px">
+      <v-card>
+        <v-card-title>Edit User</v-card-title>
+        <v-card-text>
+          <v-form @submit.prevent="updateUser">
+            <v-text-field v-model="editedUser.name" label="Name" required></v-text-field>
+            <v-text-field v-model="editedUser.gender" label="Gender" required></v-text-field>
+            <v-text-field v-model="editedUser.email" label="Email" required></v-text-field>
+            <v-text-field v-model="editedUser.phone" label="Telephone" required></v-text-field>
+            <v-text-field v-model="editedUser.address" label="Location" required></v-text-field>
+            <v-btn type="submit" color="primary">Save</v-btn>
+            <v-btn @click="closeDialog">Cancel</v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
-import { collection, addDoc, getDocs } from 'firebase/firestore'
-import { db } from '../firebase'
+import { ref, onMounted } from 'vue';
+import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 export default {
   setup() {
+    const users = ref([]);
+    const userHeaders = [
+      { text: 'Name', value: 'name' },
+      { text: 'Gender', value: 'gender' },
+      { text: 'Email', value: 'email' },
+      { text: 'Telephone', value: 'phone' },
+      { text: 'Location', value: 'address' },
+      { text: 'Date added', value: 'dateAdded' },
+      { text: 'Action', value: 'action', sortable: false }
+    ];
+
     const newMassTime = ref({
       timeOfDay: '',
       dayDate: '',
       theme: '',
       celebrant: ''
-    })
-    const massTimes = ref([])
+    });
+    const massTimes = ref([]);
     const massHeaders = [
       { text: 'Time of Day', value: 'timeOfDay' },
       { text: 'Day-Date', value: 'dayDate' },
       { text: 'Theme', value: 'theme' },
       { text: 'Celebrant', value: 'celebrant' }
-    ]
+    ];
 
     const newEvent = ref({
       name: '',
       date: '',
       plea: ''
-    })
-    const events = ref([])
+    });
+    const events = ref([]);
     const eventHeaders = [
       { text: 'Event Name', value: 'name' },
       { text: 'Date', value: 'date' },
       { text: 'Plea/Request', value: 'plea' }
-    ]
+    ];
+
+    const editedUser = ref({});
+    const editDialog = ref(false);
+
+    const fetchUsers = async () => {
+      const querySnapshot = await getDocs(collection(db, 'users'));
+      users.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    };
 
     const fetchMassTimes = async () => {
-      const querySnapshot = await getDocs(collection(db, 'liveMassTimes'))
-      massTimes.value = querySnapshot.docs.map(doc => doc.data())
-    }
+      const querySnapshot = await getDocs(collection(db, 'liveMassTimes'));
+      massTimes.value = querySnapshot.docs.map(doc => doc.data());
+    };
 
     const fetchEvents = async () => {
-      const querySnapshot = await getDocs(collection(db, 'events'))
-      events.value = querySnapshot.docs.map(doc => doc.data())
-    }
+      const querySnapshot = await getDocs(collection(db, 'events'));
+      events.value = querySnapshot.docs.map(doc => doc.data());
+    };
 
     const addMassTime = async () => {
       try {
-        await addDoc(collection(db, 'liveMassTimes'), newMassTime.value)
-        fetchMassTimes()
-        newMassTime.value = { timeOfDay: '', dayDate: '', theme: '', celebrant: '' }
+        await addDoc(collection(db, 'liveMassTimes'), newMassTime.value);
+        fetchMassTimes();
+        newMassTime.value = { timeOfDay: '', dayDate: '', theme: '', celebrant: '' };
       } catch (error) {
-        console.error('Error adding mass time: ', error)
+        console.error('Error adding mass time: ', error);
       }
-    }
-    
+    };
 
     const addEvent = async () => {
       try {
-        await addDoc(collection(db, 'events'), newEvent.value)
-        fetchEvents()
-        newEvent.value = { name: '', date: '', plea: '' }
+        await addDoc(collection(db, 'events'), newEvent.value);
+        fetchEvents();
+        newEvent.value = { name: '', date: '', plea: '' };
       } catch (error) {
-        console.error('Error adding event: ', error)
+        console.error('Error adding event: ', error);
       }
-    }
+    };
+
+    const editUser = (user) => {
+      editedUser.value = { ...user };
+      editDialog.value = true;
+    };
+
+    const updateUser = async () => {
+      try {
+        const userDocRef = doc(db, 'users', editedUser.value.id);
+        await updateDoc(userDocRef, {
+          name: editedUser.value.name,
+          gender: editedUser.value.gender,
+          email: editedUser.value.email,
+          phone: editedUser.value.phone,
+          address: editedUser.value.address
+        });
+        fetchUsers();
+        closeDialog();
+      } catch (error) {
+        console.error('Error updating user: ', error);
+      }
+    };
+
+    const deleteUser = async (userId) => {
+      try {
+        await deleteDoc(doc(db, 'users', userId));
+        fetchUsers();
+      } catch (error) {
+        console.error('Error deleting user: ', error);
+      }
+    };
+
+    const closeDialog = () => {
+      editDialog.value = false;
+    };
 
     onMounted(() => {
-      fetchMassTimes()
-      fetchEvents()
-    })
+      fetchUsers();
+      fetchMassTimes();
+      fetchEvents();
+    });
 
-    return { newMassTime, massTimes, massHeaders, addMassTime, newEvent, events, eventHeaders, addEvent }
+    return {
+      users,
+      userHeaders,
+      newMassTime,
+      massTimes,
+      massHeaders,
+      addMassTime,
+      newEvent,
+      events,
+      eventHeaders,
+      addEvent,
+      editedUser,
+      editDialog,
+      editUser,
+      updateUser,
+      deleteUser,
+      closeDialog
+    };
   }
-}
+};
 </script>
 
 <style scoped>
 .head {
   background-color: #333;
   color: #fff;
+  padding: 16px;
 }
 .padd {
   padding: 16px;
@@ -236,5 +306,18 @@ th, td {
 th {
   background-color: #333;
   color: #fff;
+}
+.section {
+  background-color: #f5f5f5;
+  padding: 16px;
+  border-radius: 8px;
+}
+.text-center {
+  text-align: center;
+}
+.subheading {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #666;
 }
 </style>
