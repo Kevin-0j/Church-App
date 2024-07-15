@@ -15,14 +15,27 @@
 export default {
   name: 'MakeAnOfferingView',
   mounted() {
-    const script = document.createElement('script')
-    script.src = 'https://www.paypal.com/sdk/js?client-id=BAA8bdtv7Mc09PP_QXMSKoh9eJQE9hIUi0xIx80EO0MxkwvlDu3iXPdS3zJU1aqkF60Z4onLvA8MlhDwNY&components=hosted-buttons&disable-funding=venmo&currency=USD'
-    script.onload = () => {
-      paypal.HostedButtons({
-        hostedButtonId: "7WTKZMG3REXXC",
-      }).render("#paypal-container-7WTKZMG3REXXC")
+    this.loadPayPalScript();
+  },
+  methods: {
+    loadPayPalScript() {
+      const script = document.createElement('script');
+      script.src = 'https://www.paypal.com/sdk/js?client-id=BAA8bdtv7Mc09PP_QXMSKoh9eJQE9hIUi0xIx80EO0MxkwvlDu3iXPdS3zJU1aqkF60Z4onLvA8MlhDwNY&components=hosted-buttons&disable-funding=venmo&currency=USD';
+      script.onload = this.initializePayPalButtons;
+      script.onerror = () => {
+        console.error('Failed to load PayPal SDK script');
+      };
+      document.head.appendChild(script);
+    },
+    initializePayPalButtons() {
+      if (window.paypal && window.paypal.HostedButtons) {
+        window.paypal.HostedButtons({
+          hostedButtonId: "7WTKZMG3REXXC",
+        }).render("#paypal-container-7WTKZMG3REXXC");
+      } else {
+        console.error('PayPal HostedButtons is not available');
+      }
     }
-    document.head.appendChild(script)
   }
 }
 </script>
@@ -41,9 +54,6 @@ export default {
 }
 .mt-8 {
   margin-top: 32px;
-}
-.mt-16 {
-  margin-top: 64px;
 }
 .text-center {
   text-align: center;
