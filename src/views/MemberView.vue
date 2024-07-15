@@ -29,23 +29,30 @@
             <div class="text">Pay Tithe/Offering</div>
           </v-card>
         </v-col>
+        <!-- New Update User Info card -->
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="functionality-card" @click="navigate('UpdateUserInfo')">
+            <v-icon class="icon">mdi-account-edit</v-icon>
+            <div class="text">Update User Info</div>
+          </v-card>
+        </v-col>
       </v-row>
     </v-container>
   </v-app>
 </template>
 
 <script>
-import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router';
 
 export default {
   setup() {
-    const router = useRouter()
+    const router = useRouter();
     const navigate = (route) => {
-      router.push({ name: route })
-    }
-    return { navigate }
+      router.push({ name: route });
+    };
+    return { navigate };
   }
-}
+};
 </script>
 
 <style scoped>

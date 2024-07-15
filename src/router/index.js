@@ -23,6 +23,7 @@ import YouthUpcomingEventsView from '../views/YouthUpcomingEvents.vue'
 import YouthChurchEventsView from '../views/YouthChurchEvents.vue'
 import YouthPriestConsultationView from '../views/YouthPriestConsultation.vue'
 import YouthPayTithesView from '../views/YouthPayTithes.vue'
+import UpdateUserInfo from '../views/UpdateUserInfo.vue' // Import the new component
 
 const routes = [
   { path: '/', name: 'Home', component: HomeView },
@@ -33,27 +34,11 @@ const routes = [
   { path: '/testimonials', name: 'Testimonials', component: TestimonialsView },
   { path: '/see-upcoming-events', name: 'SeeUpcomingEvents', component: SeeUpcomingEventsView },
   { path: '/register', name: 'Register', component: RegisterView },
-  { path: '/admin', name: 'Admin', component: Admin},
+  { path: '/admin', name: 'Admin', component: Admin },
   { path: '/member', name: 'Member', component: MemberView },
   { path: '/priest', name: 'Priest', component: PriestView },
- 
   { path: '/login', name: 'Login', component: Login },
   { path: '/upcoming-events', name: 'UpcomingEvents', component: UpcomingEvents },
-  {
-    path: '/priest/schedule',
-    name: 'PriestSchedule',
-    component: PriestSchedule
-  },
-  {
-    path: '/priest/upcoming-events',
-    name: 'PriestUpcomingEvents',
-    component: PriestUpcomingEvents
-  },
-  {
-    path: '/priest/congregants',
-    name: 'PriestCongregants',
-    component: PriestCongregants
-  },
   { path: '/book-church-events', name: 'BookEvents', component: BookEvents },
   { path: '/priest-consultation', name: 'PriestConsultation', component: PriestConsultation },
   { path: '/pay-tithes', name: 'PayTithes', component: PayTithes },
@@ -61,8 +46,11 @@ const routes = [
   { path: '/youth/upcoming-events', name: 'YouthUpcomingEvents', component: YouthUpcomingEventsView },
   { path: '/youth/book-church-events', name: 'YouthChurchEvents', component: YouthChurchEventsView },
   { path: '/youth/priest-consultation', name: 'YouthPriestConsultation', component: YouthPriestConsultationView },
-  { path: '/youth/pay-tithes', name: 'YouthPayTithes', component: YouthPayTithesView }
-
+  { path: '/youth/pay-tithes', name: 'YouthPayTithes', component: YouthPayTithesView },
+  { path: '/priest/schedule', name: 'PriestSchedule', component: PriestSchedule },
+  { path: '/priest/upcoming-events', name: 'PriestUpcomingEvents', component: PriestUpcomingEvents },
+  { path: '/priest/congregants', name: 'PriestCongregants', component: PriestCongregants },
+  { path: '/update-user-info', name: 'UpdateUserInfo', component: UpdateUserInfo } // Add the new route
 ]
 
 const router = createRouter({
