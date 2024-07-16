@@ -27,11 +27,6 @@
           label="Gender"
           required
         ></v-select>
-        <v-file-input
-          v-model="photo"
-          label="Profile Photo"
-          accept="image/*"
-        ></v-file-input>
         <v-btn type="submit" color="primary">Update</v-btn>
       </v-form>
     </v-container>
@@ -42,8 +37,7 @@
 import { ref, onMounted } from 'vue';
 import { getAuth } from 'firebase/auth';
 import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
-import { db, storage } from '../firebase'; // Adjust the path to your firebase config
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db } from '../firebase'; // Adjust the path to your firebase config
 
 export default {
   name: 'UpdateUserInfo',
@@ -54,10 +48,8 @@ export default {
       phone: '',
       address: '',
       gender: '',
-      photoURL: '',
     });
     const genders = ref(['Male', 'Female', 'Other']);
-    const photo = ref(null);
     const auth = getAuth();
 
     const fetchUserInfo = async () => {
@@ -72,7 +64,6 @@ export default {
             phone: userData.phone || '',
             address: userData.address || '',
             gender: userData.gender || '',
-            photoURL: userData.photoURL || '',
           };
         } else {
           // If the document doesn't exist, initialize it
@@ -82,7 +73,6 @@ export default {
             phone: '',
             address: '',
             gender: '',
-            photoURL: '',
           });
           user.value = {
             name: '',
@@ -90,7 +80,6 @@ export default {
             phone: '',
             address: '',
             gender: '',
-            photoURL: '',
           };
         }
       }
@@ -100,20 +89,12 @@ export default {
       const currentUser = auth.currentUser;
       if (currentUser) {
         const userDocRef = doc(db, 'users', currentUser.uid);
-        if (photo.value) {
-          const file = photo.value;
-          const storageRefPath = storageRef(storage, `user_photos/${currentUser.uid}/${file.name}`);
-          await uploadBytes(storageRefPath, file);
-          const downloadURL = await getDownloadURL(storageRefPath);
-          user.value.photoURL = downloadURL;
-        }
         await updateDoc(userDocRef, {
           name: user.value.name,
           email: user.value.email,
           phone: user.value.phone,
           address: user.value.address,
           gender: user.value.gender,
-          photoURL: user.value.photoURL || '',
         });
         alert('User information updated successfully');
       }
@@ -124,7 +105,6 @@ export default {
     return {
       user,
       genders,
-      photo,
       updateUserInfo,
     };
   }

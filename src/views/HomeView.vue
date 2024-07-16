@@ -54,7 +54,6 @@
                 <v-slider
                   v-model="slider2"
                   color="yellow"
-                  
                 ></v-slider>
               </div>
               <h4 class="mt-n4">A Community of Faith</h4>
@@ -85,7 +84,6 @@
           <v-slider
             v-model="slider2"
             color="yellow"
-            
           ></v-slider>
         </div>
       </div>
@@ -259,7 +257,7 @@
         <v-row>
           <v-col cols="6">
             <div class="section-content" id="liveMassTimes">
-              <h3>Live Mass Times</h3>
+              <h3> Mass Times</h3>
               <v-data-table
                 :headers="massHeaders"
                 :items="massTimes"
@@ -290,7 +288,7 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, onSnapshot } from 'firebase/firestore'
 import { db } from '../firebase'
 import NavBar from "../components/Navbar.vue"
 import FooterView from "../views/FooterView.vue"
@@ -400,8 +398,15 @@ export default {
     };
 
     onMounted(() => {
-      fetchEvents()
-      fetchMassTimes()
+      const eventsCollection = collection(db, 'events');
+      onSnapshot(eventsCollection, (snapshot) => {
+        events.value = snapshot.docs.map(doc => doc.data());
+      });
+
+      const massTimesCollection = collection(db, 'liveMassTimes');
+      onSnapshot(massTimesCollection, (snapshot) => {
+        massTimes.value = snapshot.docs.map(doc => doc.data());
+      });
     })
 
     return { focus, events, message, massHeaders, massTimes, eventHeaders, sendMessage, scrollToContact, scrollToSection }
