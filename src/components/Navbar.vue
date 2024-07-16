@@ -4,7 +4,7 @@
       <v-icon color="yellow" left class="mr-2">fas fa-church</v-icon> Church
     </v-btn>
     <v-spacer></v-spacer>
-    <v-btn text @click="scroll('liveMassTimes')" class="text-yellow">Live Mass Times</v-btn>
+    <v-btn text @click="scroll('liveMassTimes')" class="text-yellow"> Mass Times</v-btn>
     <v-btn text @click="scroll('contact')">Admin Help</v-btn>
     <v-btn text @click="navigateTo('/make-an-offering')">Make an Offering</v-btn>
     <v-btn text @click="scroll('seeUpcomingEvents')">See Upcoming Events</v-btn>
