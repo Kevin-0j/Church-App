@@ -1,42 +1,40 @@
 <template>
-  <div>
+  <div class="admin-container">
     <div class="head">
       <h1>Welcome Admin</h1>
     </div>
-    <div class="padd mt-4">
-      <div class="stats">
-        <div>
-          <h3>Members registered last month</h3>
-          <p>{{ userCount }}</p>
-          <p class="text-caption">+20% month over month</p>
-        </div>
-        <div>
-          <h3>Money collected last month</h3>
-          <p>Ksh 44,500.30</p>
-          <p class="text-caption">+33% month over month</p>
-        </div>
-        <div>
-          <h3>Activities done</h3>
-          <p>50</p>
-          <p class="text-caption">-8% month over month</p>
-        </div>
+    <div class="stats-container padd mt-4">
+      <div class="stat-item">
+        <h3>Members registered last month</h3>
+        <p class="stat-value">{{ userCount }}</p>
+        <p class="stat-caption">+20% month over month</p>
       </div>
-      <div class="charts mt-8">
-        <div>
-          <h3>Report on tithes collected in a month</h3>
-          <HighchartComponent :chartOptions="titheChartOptions" />
-        </div>
-        <div>
-          <h3>Report on number of church members registered in a month</h3>
-          <HighchartComponent :chartOptions="userChartOptions" />
-        </div>
-        <div>
-          <h3>Report on messages sent to admin</h3>
-          <HighchartComponent :chartOptions="messageChartOptions" />
-        </div>
+      <div class="stat-item">
+        <h3>Money collected last month</h3>
+        <p class="stat-value">Ksh 44,500.30</p>
+        <p class="stat-caption">+33% month over month</p>
+      </div>
+      <div class="stat-item">
+        <h3>Activities done</h3>
+        <p class="stat-value">10</p>
+        <p class="stat-caption">-8% month over month</p>
       </div>
     </div>
-    <div class="padd mt-8">
+    <div class="charts-container padd mt-8">
+      <div class="chart-item">
+        <h3>Report on tithes collected in a month</h3>
+        <HighchartComponent :chartOptions="titheChartOptions" />
+      </div>
+      <div class="chart-item">
+        <h3>Report on number of church members registered in a month</h3>
+        <HighchartComponent :chartOptions="userChartOptions" />
+      </div>
+      <div class="chart-item">
+        <h3>Report on messages sent to admin</h3>
+        <HighchartComponent :chartOptions="messageChartOptions" />
+      </div>
+    </div>
+    <div class="members-list padd mt-8">
       <h3>Church Members List</h3>
       <p class="subheading">Data sourced from Firebase:</p>
       <v-data-table
@@ -52,8 +50,7 @@
         </template>
       </v-data-table>
     </div>
-
-    <div class="padd mt-8">
+    <div class="priests-list padd mt-8">
       <h3>Priests List</h3>
       <p class="subheading">Data sourced from Firebase:</p>
       <v-data-table
@@ -69,17 +66,15 @@
         </template>
       </v-data-table>
     </div>
-
-    <!-- Section for Live Mass Times -->
-    <div class="padd mt-8 section">
+    <div class="mass-times padd mt-8 section">
       <h3>Live Mass Times</h3>
       <v-form @submit.prevent="addMassTime">
         <v-row>
           <v-col cols="12" sm="3">
-            <v-text-field v-model="newMassTime.timeOfDay" label="Time of Day" required></v-text-field>
+            <v-text-field v-model="newMassTime.date" label="Date" required type="date"></v-text-field>
           </v-col>
           <v-col cols="12" sm="3">
-            <v-text-field v-model="newMassTime.dayDate" label="Day-Date" required></v-text-field>
+            <v-text-field v-model="newMassTime.time" label="Time" required type="time"></v-text-field>
           </v-col>
           <v-col cols="12" sm="3">
             <v-text-field v-model="newMassTime.theme" label="Theme of the Day" required></v-text-field>
@@ -94,17 +89,21 @@
       </v-form>
       <v-data-table :headers="massHeaders" :items="massTimes" hide-default-footer class="elevation-1 mt-4"></v-data-table>
     </div>
-
-    <!-- Section for Upcoming Events -->
-    <div class="padd mt-8 section">
+    <div class="upcoming-events padd mt-8 section">
       <h3>Upcoming Events</h3>
       <v-form @submit.prevent="addEvent">
         <v-row>
-          <v-col cols="12" sm="4">
+          <v-col cols="12" sm="2">
             <v-text-field v-model="newEvent.name" label="Event Name" required></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4">
-            <v-text-field v-model="newEvent.date" label="Date" required></v-text-field>
+          <v-col cols="12" sm="2">
+            <v-text-field v-model="newEvent.date" label="Date" required type="date"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="2">
+            <v-text-field v-model="newEvent.time" label="Time" required type="time"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="2">
+            <v-text-field v-model="newEvent.place" label="Place" required></v-text-field>
           </v-col>
           <v-col cols="12" sm="4">
             <v-text-field v-model="newEvent.plea" label="Plea/Request" required></v-text-field>
@@ -116,8 +115,6 @@
       </v-form>
       <v-data-table :headers="eventHeaders" :items="events" hide-default-footer class="elevation-1 mt-4"></v-data-table>
     </div>
-
-    <!-- Edit User Dialog -->
     <v-dialog v-model="editDialog" max-width="500px">
       <v-card>
         <v-card-title>Edit User</v-card-title>
@@ -166,28 +163,32 @@ export default {
     ];
 
     const newMassTime = ref({
-      timeOfDay: '',
-      dayDate: '',
+      date: '',
+      time: '',
       theme: '',
       celebrant: ''
     });
     const massTimes = ref([]);
     const massHeaders = [
-      { text: 'Time of Day', value: 'timeOfDay' },
-      { text: 'Day-Date', value: 'dayDate' },
-      { text: 'Theme', value: 'theme' },
+      { text: 'Date', value: 'date' },
+      { text: 'Time', value: 'time' },
+      { text: 'Theme of the Day', value: 'theme' },
       { text: 'Celebrant', value: 'celebrant' }
     ];
 
     const newEvent = ref({
       name: '',
       date: '',
+      time: '',
+      place: '',
       plea: ''
     });
     const events = ref([]);
     const eventHeaders = [
       { text: 'Event Name', value: 'name' },
       { text: 'Date', value: 'date' },
+      { text: 'Time', value: 'time' },
+      { text: 'Place', value: 'place' },
       { text: 'Plea/Request', value: 'plea' }
     ];
 
@@ -222,7 +223,7 @@ export default {
       try {
         await addDoc(collection(db, 'liveMassTimes'), newMassTime.value);
         fetchMassTimes();
-        newMassTime.value = { timeOfDay: '', dayDate: '', theme: '', celebrant: '' };
+        newMassTime.value = { date: '', time: '', theme: '', celebrant: '' };
       } catch (error) {
         console.error('Error adding mass time: ', error);
       }
@@ -232,7 +233,7 @@ export default {
       try {
         await addDoc(collection(db, 'events'), newEvent.value);
         fetchEvents();
-        newEvent.value = { name: '', date: '', plea: '' };
+        newEvent.value = { name: '', date: '', time: '', place: '', plea: '' };
       } catch (error) {
         console.error('Error adding event: ', error);
       }
@@ -298,37 +299,63 @@ export default {
 
     const titheChartOptions = ref({
       chart: {
-        type: 'line'
+        type: 'line',
+        backgroundColor: '#333'
       },
       title: {
-        text: 'Tithes Collected'
+        text: 'Tithes Collected',
+        style: {
+          color: '#fff'
+        }
       },
       series: [{
-        data: [1, 2, 3, 4, 5]
+        data: [1, 2, 3, 4, 5],
+        color: '#FFD700'
       }]
     });
 
     const userChartOptions = ref({
       chart: {
-        type: 'line'
+        type: 'line',
+        backgroundColor: '#333'
       },
       title: {
-        text: 'Users Registered'
+        text: 'Users Registered',
+        style: {
+          color: '#fff'
+        }
       },
       series: [{
-        data: []
+        data: [],
+        color: '#FFD700'
       }]
     });
 
     const messageChartOptions = ref({
       chart: {
-        type: 'pie'
+        type: 'pie',
+        backgroundColor: '#333'
       },
       title: {
-        text: 'Messages to Admin'
+        text: 'Messages to Admin',
+        style: {
+          color: '#fff'
+        }
+      },
+      plotOptions: {
+        pie: {
+          dataLabels: {
+            color: '#fff'
+          },
+          colors: ['#FFD700'] // This sets the color of the pie slices to yellow
+        }
       },
       series: [{
-        data: []
+        data: [{
+          name: 'Messages',
+          y: messageCount.value,
+          color: '#FFD700' // This sets the color of the data points to yellow
+        }],
       }]
     });
 
@@ -375,62 +402,123 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.admin-container {
+  font-family: 'Roboto', sans-serif;
+  background-color: #0d0d0d;
+  color: #fff;
+  padding: 32px;
+  border-radius: 16px;
+}
+
 .head {
-  background-color: #333;
-  color: #fff;
-  padding: 16px;
-}
-.padd {
-  padding: 16px;
-}
-.mt-4 {
-  margin-top: 16px;
-}
-.mt-8 {
-  margin-top: 32px;
-}
-.mt-16 {
-  margin-top: 64px;
-}
-.stats {
-  display: flex;
-  justify-content: space-between;
-}
-.charts {
-  display: flex;
-  justify-content: space-between;
-}
-.chart-placeholder {
-  width: 100%;
-  height: 400px;
-  background: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-th, td {
-  padding: 8px;
-  border: 1px solid #ddd;
-}
-th {
-  background-color: #333;
-  color: #fff;
-}
-.section {
-  background-color: #f5f5f5;
-  padding: 16px;
+  background-color: #000;
+  color: #FFD700;
+  padding: 24px;
   border-radius: 8px;
+  text-align: center;
+  margin-bottom: 24px;
 }
+
+.stats-container {
+  display: flex;
+  justify-content: space-between;
+  background-color: #333;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.stat-item {
+  background-color: #000;
+  color: #FFD700;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  flex: 1;
+  margin: 0 12px;
+}
+
+.stat-item h3 {
+  color: #fff;
+  font-weight: bold;
+}
+
+.stat-value {
+  color: #FFD700;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.stat-caption {
+  color: #bbb;
+  font-size: 14px;
+}
+
+.charts-container {
+  display: flex;
+  justify-content: space-between;
+  background-color: #333;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.chart-item {
+  background-color: #000;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  flex: 1;
+  margin: 0 12px;
+}
+
+.members-list,
+.priests-list,
+.mass-times,
+.upcoming-events {
+  background-color: #333;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 24px;
+}
+
+.section {
+  background-color: #444;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.v-data-table {
+  border-radius: 8px;
+  background-color: #444;
+  color: #FFD700;
+  font-weight: bold;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  
+}
+
 .text-center {
   text-align: center;
 }
+
 .subheading {
-  margin-bottom: 16px;
   font-size: 14px;
-  color: #666;
+  color: #bbb;
+  margin-bottom: 24px;
+}
+
+.v-btn {
+  border-radius: 8px;
+}
+
+.v-card {
+  border-radius: 8px;
 }
 </style>

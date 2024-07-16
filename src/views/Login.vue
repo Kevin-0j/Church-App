@@ -1,5 +1,6 @@
 <template>
 	<main class="login">
+	  <NavBar />
 	  <section class="forms">
 		<form class="login" @submit.prevent="login">
 		  <h2>Login</h2>
@@ -7,15 +8,16 @@
 			type="email" 
 			placeholder="Email address"
 			v-model="login_form.email"
-			 >
+		  />
 		  <input 
 			type="password" 
 			placeholder="Password" 
 			v-model="login_form.password"
-			/>
+		  />
 		  <input 
 			type="submit" 
-			value="Login" />
+			value="Login" 
+		  />
 		  <p>Don't have an account? <a href="#" @click.prevent="navigateToRegister">Register</a></p>
 		  <div class="forgot-password">
 			<a href="#" @click.prevent="showResetPassword">Forgot Password?</a>
@@ -27,7 +29,7 @@
 			</button>
 		  </div>
 		</form>
-  
+	
 		<div v-if="resetPasswordVisible" class="reset-password">
 		  <h2>Forgot Password</h2>
 		  <p>We will send a password reset link to your email address.</p>
@@ -35,98 +37,85 @@
 			type="email" 
 			placeholder="Enter your email address"
 			v-model="resetEmail"
-			 />
+		  />
 		  <button @click="resetPassword" class="reset-button">Reset Password</button>
 		  <button @click="resetPasswordVisible = false" class="cancel-button">Cancel</button>
 		</div>
 	  </section>
 	</main>
-  </template>
-  
-  <script>
-  import { ref } from 'vue';
-  import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-  import { doc, getDoc } from 'firebase/firestore';
-  import { db } from '../firebase';
-  import router from '../router';
-  
-  export default {
+</template>
+
+<script>
+import { ref } from 'vue';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from 'firebase/firestore'; // Ensure getDoc is imported here
+import { db } from '../firebase';
+import router from '../router';
+
+export default {
 	setup() {
 	  const login_form = ref({});
 	  const resetEmail = ref('');
 	  const resetPasswordVisible = ref(false);
   
-	  const onFocus = (event) => {
-		event.target.style.borderColor = '#6C63FF';
-		event.target.style.backgroundColor = '#F3F4F6';
-	  };
-  
-	  const onBlur = (event) => {
-		event.target.style.borderColor = '#D1D5DB';
-		event.target.style.backgroundColor = '#FFFFFF';
-	  };
-  
-	  const login = () => {
-		const auth = getAuth();
-		signInWithEmailAndPassword(auth, login_form.value.email, login_form.value.password)
-		  .then(async (userCredential) => {
-			const user = userCredential.user;
-			if (!user.emailVerified) {
-			  alert("Please verify your email before logging in.");
-			  auth.signOut();
-			  return;
+	  const login = async () => {
+		try {
+		  const auth = getAuth();
+		  const userCredential = await signInWithEmailAndPassword(auth, login_form.value.email, login_form.value.password);
+		  const user = userCredential.user;
+		  if (!user.emailVerified) {
+			alert("Please verify your email before logging in.");
+			auth.signOut();
+			return;
+		  }
+		  const userDoc = await getDoc(doc(db, 'users', user.uid));
+		  if (userDoc.exists()) {
+			const userData = userDoc.data();
+			switch (userData.role) {
+			  case 'youth member':
+				router.push('/youth');
+				break;
+			  case 'church member':
+				router.push('/member');
+				break;
+			  case 'admin':
+				router.push('/admin');
+				break;
+			  case 'priest':
+				router.push('/priest');
+				break;
+			  default:
+				router.push('/home');
 			}
-			const userDoc = await getDoc(doc(db, 'users', user.uid));
-			if (userDoc.exists()) {
-			  const userData = userDoc.data();
-			  switch (userData.role) {
-				case 'youth member':
-				  router.push('/youth');
-				  break;
-				case 'church member':
-				  router.push('/member');
-				  break;
-				case 'admin':
-				  router.push('/admin');
-				  break;
-				case 'priest':
-				  router.push('/priest');
-				  break;
-				default:
-				  router.push('/home');
-			  }
-			} else {
-			  alert("No role assigned to this user.");
-			  auth.signOut();
-			}
-		  })
-		  .catch((error) => {
-			alert(error.message);
-		  });
+		  } else {
+			alert("No role assigned to this user.");
+			auth.signOut();
+		  }
+		} catch (error) {
+		  alert(error.message);
+		}
 	  };
   
 	  const showResetPassword = () => {
 		resetPasswordVisible.value = true;
 	  };
   
-	  const resetPassword = () => {
-		store.dispatch('resetPassword', resetEmail.value)
-		  .then(() => {
-			alert('Password reset email sent!');
-		  })
-		  .catch((error) => {
-			alert(error.message);
-		  });
+	  const resetPassword = async () => {
+		try {
+		  await store.dispatch('resetPassword', resetEmail.value);
+		  alert('Password reset email sent!');
+		} catch (error) {
+		  alert(error.message);
+		}
 	  };
   
-	  const signUpWithGoogle = () => {
-		store.dispatch('signInWithGoogle')
-		  .then(() => {
-			router.push('/home');
-		  })
-		  .catch((error) => {
-			alert(error.message);
-		  });
+	  const signUpWithGoogle = async () => {
+		try {
+		  await store.dispatch('signInWithGoogle');
+		  router.push('/home');
+		} catch (error) {
+		  alert(error.message);
+		}
 	  };
   
 	  const navigateToRegister = () => {
@@ -138,8 +127,6 @@
 		resetEmail,
 		resetPasswordVisible,
 		login,
-		onFocus,
-		onBlur,
 		showResetPassword,
 		resetPassword,
 		signUpWithGoogle,
@@ -147,9 +134,9 @@
 	  };
 	}
   };
-  </script>
-  
-  <style scoped>
+</script>
+
+<style scoped>
   .forms {
 	display: flex;
 	min-height: 100vh;
@@ -327,5 +314,4 @@
 	border-radius: 0.5rem;
 	cursor: pointer;
   }
-  </style>
-  
+</style>

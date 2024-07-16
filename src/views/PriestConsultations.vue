@@ -1,13 +1,12 @@
 <template>
   <v-app class="background-container">
     <v-container class="overlay">
-      <h2 class="title">Congregants Booked for Events</h2>
+      <h2 class="title">Consultations Booked</h2>
       <v-card class="table-card">
         <v-simple-table>
           <thead>
             <tr>
-              <th>Event</th>
-              <th>Congregant</th>
+              <th>Name</th>
               <th>Email</th>
               <th>Date</th>
               <th>Time</th>
@@ -16,16 +15,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(booking, index) in bookings" :key="index">
-              <td>{{ booking.event }}</td>
-              <td>{{ booking.name }}</td>
-              <td>{{ booking.email }}</td>
-              <td>{{ booking.date }}</td>
-              <td>{{ booking.time }}</td>
-              <td>{{ booking.role }}</td>
+            <tr v-for="(consultation, index) in consultations" :key="index">
+              <td>{{ consultation.name }}</td>
+              <td>{{ consultation.email }}</td>
+              <td>{{ consultation.date }}</td>
+              <td>{{ consultation.time }}</td>
+              <td>{{ consultation.role }}</td>
               <td>
-                <v-btn small color="green" class="action-btn" @click="acceptBooking(booking, index)">Accept</v-btn>
-                <v-btn small color="red" class="action-btn" @click="declineBooking(booking, index)">Decline</v-btn>
+                <v-btn small color="green" @click="acceptConsultation(consultation, index)">Accept</v-btn>
+                <v-btn small color="red" @click="declineConsultation(consultation, index)">Decline</v-btn>
               </td>
             </tr>
           </tbody>
@@ -37,51 +35,45 @@
 
 <script>
 import { ref, onMounted } from 'vue';
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase'; // Adjust the path to your Firebase configuration
 
 export default {
-  name: 'PriestCongregants',
+  name: 'PriestConsultations',
   setup() {
-    const bookings = ref([]);
+    const consultations = ref([]);
 
-    const fetchBookings = async () => {
+    const fetchConsultations = async () => {
+      const querySnapshot = await getDocs(collection(db, 'consultations'));
+      consultations.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    };
+
+    const acceptConsultation = async (consultation, index) => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'bookings'));
-        bookings.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        await updateDoc(doc(db, 'consultations', consultation.id), { status: 'accepted' });
+        consultations.value.splice(index, 1); // Remove the consultation from the list
+        alert(`Accepted consultation for ${consultation.name}`);
       } catch (error) {
-        console.error('Error fetching bookings: ', error);
+        console.error('Error accepting consultation: ', error);
       }
     };
 
-    const acceptBooking = async (booking, index) => {
+    const declineConsultation = async (consultation, index) => {
       try {
-        await updateDoc(doc(db, 'bookings', booking.id), { status: 'Accepted' });
-        bookings.value.splice(index, 1); // Remove the booking from the list
-        alert(`Accepted booking for ${booking.name}`);
+        await updateDoc(doc(db, 'consultations', consultation.id), { status: 'declined' });
+        consultations.value.splice(index, 1); // Remove the consultation from the list
+        alert(`Declined consultation for ${consultation.name}`);
       } catch (error) {
-        console.error('Error accepting booking: ', error);
+        console.error('Error declining consultation: ', error);
       }
     };
 
-    const declineBooking = async (booking, index) => {
-      try {
-        await updateDoc(doc(db, 'bookings', booking.id), { status: 'Declined' });
-        bookings.value.splice(index, 1); // Remove the booking from the list
-        alert(`Declined booking for ${booking.name}`);
-      } catch (error) {
-        console.error('Error declining booking: ', error);
-      }
-    };
-
-    onMounted(() => {
-      fetchBookings();
-    });
+    onMounted(fetchConsultations);
 
     return {
-      bookings,
-      acceptBooking,
-      declineBooking,
+      consultations,
+      acceptConsultation,
+      declineConsultation
     };
   }
 };
@@ -146,9 +138,5 @@ tbody td {
 
 tbody tr:hover {
   background-color: #f5f5f5;
-}
-
-.action-btn {
-  margin-right: 8px;
 }
 </style>

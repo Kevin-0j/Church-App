@@ -1,6 +1,7 @@
 <template>
   <v-app class="background-container">
-    <v-container class="overlay">
+    <NavBar />
+    <v-container class="overlay mt-12">
       <h2 class="title">Youth Dashboard</h2>
       <v-row justify="center" class="functionality-row">
         <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
@@ -83,8 +84,12 @@ import { getAuth } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db, storage } from '../firebase'; // Adjust the path to your firebase config
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import NavBar from '@/components/Navbar.vue';
 
 export default {
+  components: {
+    NavBar
+  },
   name: 'YouthView',
   setup() {
     const user = ref({
@@ -229,5 +234,9 @@ export default {
 
 .text-center {
   text-align: center;
+}
+
+.mt-12 {
+  margin-top: 96px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <v-app class="background-container">
     <v-container class="overlay">
-      <h2 class="title">Update User Info</h2>
+      <h2 class="title">Update User Information</h2>
       <v-form @submit.prevent="updateUserInfo">
         <v-text-field
           v-model="user.name"
@@ -132,6 +132,14 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  margin-bottom: 20px;
+  text-align: center;
+  color: yellow;
+  font-size: 3rem;
+  text-shadow: 2px 2px 5px black;
+  animation: fadeIn 2s ease-in-out;
+}
 .background-container {
   background-image: url('@/assets/christiancounseling.jpeg');
   background-size: cover;

@@ -1,6 +1,7 @@
 <template>
   <v-app class="background-container">
-    <v-container class="overlay">
+    <NavBar />
+    <v-container class="overlay mt-12">
       <h2 class="title">Member Dashboard</h2>
       <v-row justify="center" class="functionality-row">
         <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
@@ -42,8 +43,12 @@
 
 <script>
 import { useRouter } from 'vue-router';
+import NavBar from '@/components/Navbar.vue';
 
 export default {
+  components: {
+    NavBar
+  },
   setup() {
     const router = useRouter();
     const navigate = (route) => {
@@ -116,5 +121,9 @@ export default {
   margin-top: 15px;
   font-size: 18px;
   color: white;
+}
+
+.mt-12 {
+  margin-top: 96px;
 }
 </style>

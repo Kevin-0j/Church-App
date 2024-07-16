@@ -1,32 +1,39 @@
 <template>
   <v-app class="background-container">
-    <v-container class="overlay">
+    <NavBar />
+    <v-container class="overlay mt-12">
       <h2 class="title">Priest Dashboard</h2>
       <v-row justify="center" class="functionality-row">
         <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
-          <v-card class="functionality-card" @click="navigateTo('PriestSchedule')">
+          <v-card class="functionality-card" @click="navigate('PriestSchedule')">
             <v-icon class="icon">mdi-calendar-clock</v-icon>
             <div class="text">View Schedule</div>
           </v-card>
         </v-col>
         <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
-          <v-card class="functionality-card" @click="navigateTo('PriestUpcomingEvents')">
+          <v-card class="functionality-card" @click="navigate('PriestUpcomingEvents')">
             <v-icon class="icon">mdi-calendar"></v-icon>
             <div class="text">Upcoming Church Events</div>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
+          <v-card class="functionality-card" @click="navigate('PriestCongregants')">
+            <v-icon class="icon">mdi-account-group</v-icon>
+            <div class="text">View Events</div>
           </v-card>
         </v-col>
       </v-row>
       <v-row justify="center" class="functionality-row">
         <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
-          <v-card class="functionality-card" @click="navigateTo('PriestCongregants')">
-            <v-icon class="icon">mdi-account-group</v-icon>
-            <div class="text">View Congregants</div>
+          <v-card class="functionality-card" @click="navigate('UpdateUserInfo')">
+            <v-icon class="icon">mdi-account-edit</v-icon>
+            <div class="text">Update User Info</div>
           </v-card>
         </v-col>
         <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
-          <v-card class="functionality-card" @click="navigateTo('UpdateUserInfo')">
-            <v-icon class="icon">mdi-account-edit</v-icon>
-            <div class="text">Update User Info</div>
+          <v-card class="functionality-card" @click="navigate('PriestConsultations')">
+            <v-icon class="icon">mdi-account-question</v-icon>
+            <div class="text">View Consultations</div>
           </v-card>
         </v-col>
       </v-row>
@@ -36,15 +43,18 @@
 
 <script>
 import { useRouter } from 'vue-router';
+import NavBar from '@/components/Navbar.vue';
 
 export default {
-  name: 'PriestView',
+  components: {
+    NavBar
+  },
   setup() {
     const router = useRouter();
-    const navigateTo = (route) => {
+    const navigate = (route) => {
       router.push({ name: route });
     };
-    return { navigateTo };
+    return { navigate };
   }
 };
 </script>
@@ -111,5 +121,9 @@ export default {
   margin-top: 15px;
   font-size: 18px;
   color: white;
+}
+
+.mt-12 {
+  margin-top: 96px;
 }
 </style>

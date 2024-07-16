@@ -24,6 +24,7 @@ import YouthChurchEventsView from '../views/YouthChurchEvents.vue';
 import YouthPriestConsultationView from '../views/YouthPriestConsultation.vue';
 import YouthPayTithesView from '../views/YouthPayTithes.vue';
 import UpdateUserInfo from '../views/UpdateUserInfo.vue'; // Import the new component
+import PriestConsultations from '../views/PriestConsultations.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: HomeView },
@@ -50,6 +51,7 @@ const routes = [
   { path: '/priest/schedule', name: 'PriestSchedule', component: PriestSchedule },
   { path: '/priest/upcoming-events', name: 'PriestUpcomingEvents', component: PriestUpcomingEvents },
   { path: '/priest/congregants', name: 'PriestCongregants', component: PriestCongregants },
+  { path: '/priest/consultations', name: 'PriestConsultations', component: PriestConsultations },
   { path: '/update-user-info', name: 'UpdateUserInfo', component: UpdateUserInfo } // Add the new route
 ];
 

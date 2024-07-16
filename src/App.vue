@@ -1,67 +1,56 @@
 <template>
   <div id="app">
     <v-app>
-      <v-app-bar app color="black" dark flat class="px-12">
-        <v-btn>
-          <v-icon color="yellow" left class="mr-2">fas fa-church</v-icon> Church
-        </v-btn>
-
-        <v-spacer></v-spacer>
-        <v-btn text @click="scroll('liveMassTimes')" class="text-yellow">Live Mass Times</v-btn>
-        <v-btn text @click="scroll('contact')">Admin Help</v-btn>
-        <v-btn text @click="navigate('MakeAnOffering')">Make an Offering</v-btn>
-        <v-btn text @click="scroll('seeUpcomingEvents')">See Upcoming Events</v-btn>
-        <v-btn text @click="scroll('testimonials')">Testimonials</v-btn>
-        <v-btn text v-if="isAuthenticated" @click="logout">Log Out</v-btn>
-        <v-btn text v-else @click="navigateToLogin">Login</v-btn>
-        <v-btn text v-else @click="navigateToRegister">Register</v-btn>
-      </v-app-bar>
-
-      <div id="nav-links">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link>
-      </div>
-
+      <NavBar />
       <router-view/>
     </v-app>
   </div>
 </template>
 
 <script>
-import { ref, onBeforeMount } from 'vue'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from './firebase'
-import router from './router'
+import { ref, onBeforeMount } from 'vue';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from './firebase';
+import router from './router';
+import NavBar from "./components/Navbar.vue";
 
 export default {
+  components: {
+    NavBar
+  },
   setup() {
-    const isAuthenticated = ref(false)
-    const isAdmin = ref(false)
-    const auth = getAuth()
+    const isAuthenticated = ref(false);
+    const auth = getAuth();
 
     const checkUserRole = async (user) => {
       if (user) {
-        const userDoc = await getDoc(doc(db, 'users', user.uid))
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (userDoc.exists()) {
-          const userData = userDoc.data()
-          isAdmin.value = userData.role === 'admin'
-          if (isAdmin.value) {
-            router.push('/admin');
-          } else if (userData.role === 'church member') {
-            router.push('/member');
-          } else if (userData.role === 'priest') {
-            router.push('/priest');
-          } else if (userData.role === 'youth member') {
-            router.push('/youth');
+          const userData = userDoc.data();
+          switch (userData.role) {
+            case 'admin':
+              router.push('/admin');
+              break;
+            case 'church member':
+              router.push('/member');
+              break;
+            case 'priest':
+              router.push('/priest');
+              break;
+            case 'youth member':
+              router.push('/youth');
+              break;
+            default:
+              router.push('/');
           }
         } else {
-          isAdmin.value = false
+          router.push('/login');
         }
-        isAuthenticated.value = true
+        isAuthenticated.value = true;
       } else {
-        isAuthenticated.value = false
-        isAdmin.value = false
+        isAuthenticated.value = false;
+        // Do not redirect to login here
       }
     };
 
@@ -78,27 +67,10 @@ export default {
       });
     };
 
-    const navigate = (routeName) => {
-      router.push({ name: routeName });
+    return {
+      isAuthenticated,
+      logout
     };
-
-    const navigateToLogin = () => {
-      router.push('/login');
-    };
-
-    const navigateToRegister = () => {
-      router.push('/register');
-    };
-
-    return { isAuthenticated, isAdmin, logout, navigate, navigateToLogin, navigateToRegister };
-  },
-  methods: {
-    scroll(refName) {
-      const element = document.getElementById(refName);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
   }
 };
 </script>
@@ -115,19 +87,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 
 #nav-links {
